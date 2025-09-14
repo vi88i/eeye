@@ -1,0 +1,15 @@
+stocks:
+  - symbol: COFORGE
+    exchange: NSE
+    segment: CASH
+    name: Coforge Ltd
+
+  - symbol: MPHASIS
+    exchange: NSE
+    segment: CASH
+    name: Mphasis Ltd
+
+  - symbol: MOSCHIP
+    exchange: NSE
+    segment: CASH
+    name: Moschip Technologies Ltd
