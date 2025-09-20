@@ -4,6 +4,7 @@ import (
 	"eeye/src/db"
 	"eeye/src/models"
 	"fmt"
+	"log"
 	"sync"
 )
 
@@ -36,4 +37,15 @@ func Extractor(stock *models.Stock) error {
 	defer mu.Unlock()
 	cache[stock] = candles
 	return nil
+}
+
+func PurgeCache(stock *models.Stock) {
+	mu.Lock()
+	defer mu.Unlock()
+
+	_, ok := cache[stock]
+	if ok {
+		log.Printf("purged %v", stock.Symbol)
+		delete(cache, stock)
+	}
 }

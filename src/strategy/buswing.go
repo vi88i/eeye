@@ -5,7 +5,12 @@ import (
 	"eeye/src/models"
 	"eeye/src/steps"
 	"log"
+	"strings"
 	"sync"
+)
+
+const (
+	strategyName = "Bullish Swing"
 )
 
 func worker(in chan *models.Stock, out chan *models.Stock, wg *sync.WaitGroup) {
@@ -20,16 +25,28 @@ func worker(in chan *models.Stock, out chan *models.Stock, wg *sync.WaitGroup) {
 			continue
 		}
 
-		ok := steps.VolumeScreener(
-			stock,
-			func(currentVolume float64, averageVolume float64) bool {
-				return currentVolume >= averageVolume 
-			},
-		)
+		screeners := []func() bool{
+			steps.VolumeScreener(
+				strategyName,
+				stock,
+				func(currentVolume float64, averageVolume float64) bool {
+					return currentVolume >= averageVolume
+				},
+			),
+			steps.RSIScreener(
+				strategyName,
+				stock,
+				func(currentRSI float64) bool {
+					return currentRSI >= 40.0 && currentRSI <= 60.0
+				},
+			),
+		}
 
-		if ok {
+		if steps.Executor(screeners) {
 			out <- stock
 		}
+
+		steps.PurgeCache(stock)
 	}
 	wg.Done()
 }
@@ -46,17 +63,24 @@ func BullishSwing(stocks []models.Stock) {
 		go worker(in, out, &wg)
 	}
 
-	for _, stock := range stocks {
-		in <- &stock
-	}
-	close(in)
-
 	go func() {
-		wg.Wait()
-		close(out)
+		for _, stock := range stocks {
+			in <- &stock
+		}
+		close(in)
 	}()
 
+	go func() {
+		defer close(out)
+		wg.Wait()
+	}()
+
+	filtered := []string{}
 	for stock := range out {
-		log.Printf("Received %v\n", stock.Symbol)
+		filtered = append(filtered, stock.Symbol)
+	}
+
+	if len(filtered) > 0 {
+		log.Printf("%v result: \n%v\n", strategyName, strings.Join(filtered, "\n"))
 	}
 }
