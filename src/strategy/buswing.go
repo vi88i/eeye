@@ -26,6 +26,10 @@ func worker(in chan *models.Stock, out chan *models.Stock, wg *sync.WaitGroup) {
 		}
 
 		screeners := []func() bool{
+			steps.BullishCandleScreener(
+				strategyName,
+				stock,
+			),
 			steps.VolumeScreener(
 				strategyName,
 				stock,
@@ -82,5 +86,7 @@ func BullishSwing(stocks []models.Stock) {
 
 	if len(filtered) > 0 {
 		log.Printf("%v result: \n%v\n", strategyName, strings.Join(filtered, "\n"))
+	} else {
+		log.Printf("No stocks satisfy %v", strategyName)
 	}
 }

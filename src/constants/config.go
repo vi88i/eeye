@@ -2,5 +2,5 @@ package constants
 
 const (
 	MinConcurrency = 1
-	MaxConcurrency = 3
+	MaxConcurrency = 5
 )

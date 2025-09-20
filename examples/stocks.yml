@@ -1,15 +1,1500 @@
 stocks:
-  - symbol: COFORGE
+  - symbol: ANANTRAJ
     exchange: NSE
     segment: CASH
-    name: Coforge Ltd
+    name: ANANTRAJ
+
+  - symbol: PCBL
+    exchange: NSE
+    segment: CASH
+    name: PCBL
+
+  - symbol: ASTERDM
+    exchange: NSE
+    segment: CASH
+    name: ASTERDM
+
+  - symbol: LALPATHLAB
+    exchange: NSE
+    segment: CASH
+    name: LALPATHLAB
+
+  - symbol: CESC
+    exchange: NSE
+    segment: CASH
+    name: CESC
+
+  - symbol: AFCONS
+    exchange: NSE
+    segment: CASH
+    name: AFCONS
+
+  - symbol: REDINGTON
+    exchange: NSE
+    segment: CASH
+    name: REDINGTON
+
+  - symbol: PPLPHARMA
+    exchange: NSE
+    segment: CASH
+    name: PPLPHARMA
+
+  - symbol: INOXWIND
+    exchange: NSE
+    segment: CASH
+    name: INOXWIND
+
+  - symbol: AFFLE
+    exchange: NSE
+    segment: CASH
+    name: AFFLE
+
+  - symbol: RADICO
+    exchange: NSE
+    segment: CASH
+    name: RADICO
+
+  - symbol: IDBI
+    exchange: NSE
+    segment: CASH
+    name: IDBI
+
+  - symbol: AEGISLOG
+    exchange: NSE
+    segment: CASH
+    name: AEGISLOG
+
+  - symbol: HINDCOPPER
+    exchange: NSE
+    segment: CASH
+    name: HINDCOPPER
+
+  - symbol: ITI
+    exchange: NSE
+    segment: CASH
+    name: ITI
+
+  - symbol: PNBHOUSING
+    exchange: NSE
+    segment: CASH
+    name: PNBHOUSING
+
+  - symbol: TRIDENT
+    exchange: NSE
+    segment: CASH
+    name: TRIDENT
+
+  - symbol: NBCC
+    exchange: NSE
+    segment: CASH
+    name: NBCC
+
+  - symbol: ZENSARTECH
+    exchange: NSE
+    segment: CASH
+    name: ZENSARTECH
+
+  - symbol: PGEL
+    exchange: NSE
+    segment: CASH
+    name: PGEL
+
+  - symbol: TITAGARH
+    exchange: NSE
+    segment: CASH
+    name: TITAGARH
+
+  - symbol: DEVYANI
+    exchange: NSE
+    segment: CASH
+    name: DEVYANI
+
+  - symbol: RPOWER
+    exchange: NSE
+    segment: CASH
+    name: RPOWER
+
+  - symbol: IIFL
+    exchange: NSE
+    segment: CASH
+    name: IIFL
+
+  - symbol: SWANCORP
+    exchange: NSE
+    segment: CASH
+    name: SWANCORP
+
+  - symbol: IFCI
+    exchange: NSE
+    segment: CASH
+    name: IFCI
+
+  - symbol: RITES
+    exchange: NSE
+    segment: CASH
+    name: RITES
+
+  - symbol: CAMS
+    exchange: NSE
+    segment: CASH
+    name: CAMS
+
+  - symbol: AARTIIND
+    exchange: NSE
+    segment: CASH
+    name: AARTIIND
+
+  - symbol: LAURUSLABS
+    exchange: NSE
+    segment: CASH
+    name: LAURUSLABS
+
+  - symbol: WELCORP
+    exchange: NSE
+    segment: CASH
+    name: WELCORP
+
+  - symbol: NCC
+    exchange: NSE
+    segment: CASH
+    name: NCC
+
+  - symbol: DATAPATTNS
+    exchange: NSE
+    segment: CASH
+    name: DATAPATTNS
+
+  - symbol: KFINTECH
+    exchange: NSE
+    segment: CASH
+    name: KFINTECH
+
+  - symbol: MGL
+    exchange: NSE
+    segment: CASH
+    name: MGL
+
+  - symbol: TATACHEM
+    exchange: NSE
+    segment: CASH
+    name: TATACHEM
+
+  - symbol: MCX
+    exchange: NSE
+    segment: CASH
+    name: MCX
+
+  - symbol: TTML
+    exchange: NSE
+    segment: CASH
+    name: TTML
+
+  - symbol: ACE
+    exchange: NSE
+    segment: CASH
+    name: ACE
+
+  - symbol: AMBER
+    exchange: NSE
+    segment: CASH
+    name: AMBER
+
+  - symbol: AADHARHFC
+    exchange: NSE
+    segment: CASH
+    name: AADHARHFC
+
+  - symbol: IEX
+    exchange: NSE
+    segment: CASH
+    name: IEX
+
+  - symbol: GODFRYPHLP
+    exchange: NSE
+    segment: CASH
+    name: GODFRYPHLP
+
+  - symbol: TRITURBINE
+    exchange: NSE
+    segment: CASH
+    name: TRITURBINE
+
+  - symbol: NUVAMA
+    exchange: NSE
+    segment: CASH
+    name: NUVAMA
+
+  - symbol: RAMCOCEM
+    exchange: NSE
+    segment: CASH
+    name: RAMCOCEM
+
+  - symbol: NATCOPHARM
+    exchange: NSE
+    segment: CASH
+    name: NATCOPHARM
+
+  - symbol: SAGILITY
+    exchange: NSE
+    segment: CASH
+    name: SAGILITY
+
+  - symbol: FIRSTCRY
+    exchange: NSE
+    segment: CASH
+    name: FIRSTCRY
+
+  - symbol: ANGELONE
+    exchange: NSE
+    segment: CASH
+    name: ANGELONE
+
+  - symbol: FIVESTAR
+    exchange: NSE
+    segment: CASH
+    name: FIVESTAR
+
+  - symbol: IKS
+    exchange: NSE
+    segment: CASH
+    name: IKS
+
+  - symbol: POONAWALLA
+    exchange: NSE
+    segment: CASH
+    name: POONAWALLA
+
+  - symbol: CDSL
+    exchange: NSE
+    segment: CASH
+    name: CDSL
+
+  - symbol: NEWGEN
+    exchange: NSE
+    segment: CASH
+    name: NEWGEN
+
+  - symbol: BEML
+    exchange: NSE
+    segment: CASH
+    name: BEML
+
+  - symbol: BATAINDIA
+    exchange: NSE
+    segment: CASH
+    name: BATAINDIA
+
+  - symbol: SHYAMMETL
+    exchange: NSE
+    segment: CASH
+    name: SHYAMMETL
+
+  - symbol: CASTROLIND
+    exchange: NSE
+    segment: CASH
+    name: CASTROLIND
+
+  - symbol: FSL
+    exchange: NSE
+    segment: CASH
+    name: FSL
+
+  - symbol: GESHIP
+    exchange: NSE
+    segment: CASH
+    name: GESHIP
+
+  - symbol: HSCL
+    exchange: NSE
+    segment: CASH
+    name: HSCL
+
+  - symbol: IRCON
+    exchange: NSE
+    segment: CASH
+    name: IRCON
+
+  - symbol: KPIL
+    exchange: NSE
+    segment: CASH
+    name: KPIL
+
+  - symbol: TEJASNET
+    exchange: NSE
+    segment: CASH
+    name: TEJASNET
+
+  - symbol: ABREL
+    exchange: NSE
+    segment: CASH
+    name: ABREL
+
+  - symbol: GSPL
+    exchange: NSE
+    segment: CASH
+    name: GSPL
+
+  - symbol: CYIENT
+    exchange: NSE
+    segment: CASH
+    name: CYIENT
+
+  - symbol: CHAMBLFERT
+    exchange: NSE
+    segment: CASH
+    name: CHAMBLFERT
+
+  - symbol: CROMPTON
+    exchange: NSE
+    segment: CASH
+    name: CROMPTON
+
+  - symbol: GODIGIT
+    exchange: NSE
+    segment: CASH
+    name: GODIGIT
+
+  - symbol: GRSE
+    exchange: NSE
+    segment: CASH
+    name: GRSE
+
+  - symbol: ZENTEC
+    exchange: NSE
+    segment: CASH
+    name: ZENTEC
+
+  - symbol: KEC
+    exchange: NSE
+    segment: CASH
+    name: KEC
+
+  - symbol: RAILTEL
+    exchange: NSE
+    segment: CASH
+    name: RAILTEL
+
+  - symbol: KAYNES
+    exchange: NSE
+    segment: CASH
+    name: KAYNES
+
+  - symbol: KARURVYSYA
+    exchange: NSE
+    segment: CASH
+    name: KARURVYSYA
+
+  - symbol: PVRINOX
+    exchange: NSE
+    segment: CASH
+    name: PVRINOX
+
+  - symbol: BLS
+    exchange: NSE
+    segment: CASH
+    name: BLS
+
+  - symbol: DELHIVERY
+    exchange: NSE
+    segment: CASH
+    name: DELHIVERY
+
+  - symbol: NH
+    exchange: NSE
+    segment: CASH
+    name: NH
+
+  - symbol: SONATSOFTW
+    exchange: NSE
+    segment: CASH
+    name: SONATSOFTW
+
+  - symbol: ARE&M
+    exchange: NSE
+    segment: CASH
+    name: ARE&M
+
+  - symbol: JWL
+    exchange: NSE
+    segment: CASH
+    name: JWL
+
+  - symbol: JBMA
+    exchange: NSE
+    segment: CASH
+    name: JBMA
+
+  - symbol: NAVINFLUOR
+    exchange: NSE
+    segment: CASH
+    name: NAVINFLUOR
+
+  - symbol: HFCL
+    exchange: NSE
+    segment: CASH
+    name: HFCL
+
+  - symbol: WELSPUNLIV
+    exchange: NSE
+    segment: CASH
+    name: WELSPUNLIV
+
+  - symbol: MANAPPURAM
+    exchange: NSE
+    segment: CASH
+    name: MANAPPURAM
+
+  - symbol: RKFORGE
+    exchange: NSE
+    segment: CASH
+    name: RKFORGE
+
+  - symbol: BSOFT
+    exchange: NSE
+    segment: CASH
+    name: BSOFT
+
+  - symbol: CREDITACC
+    exchange: NSE
+    segment: CASH
+    name: CREDITACC
+
+  - symbol: BRIGADE
+    exchange: NSE
+    segment: CASH
+    name: BRIGADE
+
+  - symbol: IGIL
+    exchange: NSE
+    segment: CASH
+    name: IGIL
+
+  - symbol: INDIAMART
+    exchange: NSE
+    segment: CASH
+    name: INDIAMART
+
+  - symbol: HBLENGINE
+    exchange: NSE
+    segment: CASH
+    name: HBLENGINE
+
+  - symbol: SIGNATURE
+    exchange: NSE
+    segment: CASH
+    name: SIGNATURE
+
+  - symbol: NEULANDLAB
+    exchange: NSE
+    segment: CASH
+    name: NEULANDLAB
+
+  - symbol: ATUL
+    exchange: NSE
+    segment: CASH
+    name: ATUL
+
+  - symbol: PEL
+    exchange: NSE
+    segment: CASH
+    name: PEL
+
+  - symbol: ADANIPOWER
+    exchange: NSE
+    segment: CASH
+    name: ADANIPOWER
+
+  - symbol: SWIGGY
+    exchange: NSE
+    segment: CASH
+    name: SWIGGY
+
+  - symbol: ADANIGREEN
+    exchange: NSE
+    segment: CASH
+    name: ADANIGREEN
+
+  - symbol: ADANIENSOL
+    exchange: NSE
+    segment: CASH
+    name: ADANIENSOL
+
+  - symbol: HYUNDAI
+    exchange: NSE
+    segment: CASH
+    name: HYUNDAI
+
+  - symbol: CANBK
+    exchange: NSE
+    segment: CASH
+    name: CANBK
+
+  - symbol: TORNTPHARM
+    exchange: NSE
+    segment: CASH
+    name: TORNTPHARM
+
+  - symbol: JSWENERGY
+    exchange: NSE
+    segment: CASH
+    name: JSWENERGY
+
+  - symbol: DIVISLAB
+    exchange: NSE
+    segment: CASH
+    name: DIVISLAB
+
+  - symbol: BPCL
+    exchange: NSE
+    segment: CASH
+    name: BPCL
+
+  - symbol: PNB
+    exchange: NSE
+    segment: CASH
+    name: PNB
+
+  - symbol: BANKBARODA
+    exchange: NSE
+    segment: CASH
+    name: BANKBARODA
+
+  - symbol: HAL
+    exchange: NSE
+    segment: CASH
+    name: HAL
+
+  - symbol: IOC
+    exchange: NSE
+    segment: CASH
+    name: IOC
+
+  - symbol: LODHA
+    exchange: NSE
+    segment: CASH
+    name: LODHA
+
+  - symbol: TATAPOWER
+    exchange: NSE
+    segment: CASH
+    name: TATAPOWER
+
+  - symbol: CHOLAFIN
+    exchange: NSE
+    segment: CASH
+    name: CHOLAFIN
+
+  - symbol: LICI
+    exchange: NSE
+    segment: CASH
+    name: LICI
+
+  - symbol: DMART
+    exchange: NSE
+    segment: CASH
+    name: DMART
+
+  - symbol: GAIL
+    exchange: NSE
+    segment: CASH
+    name: GAIL
+
+  - symbol: PFC
+    exchange: NSE
+    segment: CASH
+    name: PFC
+
+  - symbol: IRFC
+    exchange: NSE
+    segment: CASH
+    name: IRFC
+
+  - symbol: RECLTD
+    exchange: NSE
+    segment: CASH
+    name: RECLTD
+
+  - symbol: UNITDSPR
+    exchange: NSE
+    segment: CASH
+    name: UNITDSPR
+
+  - symbol: AMBUJACEM
+    exchange: NSE
+    segment: CASH
+    name: AMBUJACEM
+
+  - symbol: MOTHERSON
+    exchange: NSE
+    segment: CASH
+    name: MOTHERSON
+
+  - symbol: PIDILITIND
+    exchange: NSE
+    segment: CASH
+    name: PIDILITIND
+
+  - symbol: VBL
+    exchange: NSE
+    segment: CASH
+    name: VBL
+
+  - symbol: GODREJCP
+    exchange: NSE
+    segment: CASH
+    name: GODREJCP
+
+  - symbol: ABB
+    exchange: NSE
+    segment: CASH
+    name: ABB
+
+  - symbol: SHREECEM
+    exchange: NSE
+    segment: CASH
+    name: SHREECEM
+
+  - symbol: SIEMENS
+    exchange: NSE
+    segment: CASH
+    name: SIEMENS
+
+  - symbol: VEDL
+    exchange: NSE
+    segment: CASH
+    name: VEDL
+
+  - symbol: JINDALSTEL
+    exchange: NSE
+    segment: CASH
+    name: JINDALSTEL
+
+  - symbol: BAJAJHFL
+    exchange: NSE
+    segment: CASH
+    name: BAJAJHFL
+
+  - symbol: LTIM
+    exchange: NSE
+    segment: CASH
+    name: LTIM
+
+  - symbol: ICICIPRULI
+    exchange: NSE
+    segment: CASH
+    name: ICICIPRULI
+
+  - symbol: DABUR
+    exchange: NSE
+    segment: CASH
+    name: DABUR
+
+  - symbol: HAVELLS
+    exchange: NSE
+    segment: CASH
+    name: HAVELLS
+
+  - symbol: BOSCHLTD
+    exchange: NSE
+    segment: CASH
+    name: BOSCHLTD
+
+  - symbol: BRITANNIA
+    exchange: NSE
+    segment: CASH
+    name: BRITANNIA
+
+  - symbol: TVSMOTOR
+    exchange: NSE
+    segment: CASH
+    name: TVSMOTOR
+
+  - symbol: CGPOWER
+    exchange: NSE
+    segment: CASH
+    name: CGPOWER
+
+  - symbol: NAUKRI
+    exchange: NSE
+    segment: CASH
+    name: NAUKRI
+
+  - symbol: DLF
+    exchange: NSE
+    segment: CASH
+    name: DLF
+
+  - symbol: INDIGO
+    exchange: NSE
+    segment: CASH
+    name: INDIGO
+
+  - symbol: ICICIGI
+    exchange: NSE
+    segment: CASH
+    name: ICICIGI
+
+  - symbol: INDHOTEL
+    exchange: NSE
+    segment: CASH
+    name: INDHOTEL
+
+  - symbol: ZYDUSLIFE
+    exchange: NSE
+    segment: CASH
+    name: ZYDUSLIFE
+
+  - symbol: BAJAJHLDNG
+    exchange: NSE
+    segment: CASH
+    name: BAJAJHLDNG
+
+  - symbol: IDEA
+    exchange: NSE
+    segment: CASH
+    name: IDEA
+
+  - symbol: ATGL
+    exchange: NSE
+    segment: CASH
+    name: ATGL
+
+  - symbol: VMM
+    exchange: NSE
+    segment: CASH
+    name: VMM
+
+  - symbol: IREDA
+    exchange: NSE
+    segment: CASH
+    name: IREDA
+
+  - symbol: MOTILALOFS
+    exchange: NSE
+    segment: CASH
+    name: MOTILALOFS
+
+  - symbol: GODREJPROP
+    exchange: NSE
+    segment: CASH
+    name: GODREJPROP
+
+  - symbol: UNIONBANK
+    exchange: NSE
+    segment: CASH
+    name: UNIONBANK
+
+  - symbol: HUDCO
+    exchange: NSE
+    segment: CASH
+    name: HUDCO
+
+  - symbol: SUZLON
+    exchange: NSE
+    segment: CASH
+    name: SUZLON
+
+  - symbol: ABFRL
+    exchange: NSE
+    segment: CASH
+    name: ABFRL
+
+  - symbol: SAIL
+    exchange: NSE
+    segment: CASH
+    name: SAIL
+
+  - symbol: BHEL
+    exchange: NSE
+    segment: CASH
+    name: BHEL
+
+  - symbol: ASHOKLEY
+    exchange: NSE
+    segment: CASH
+    name: ASHOKLEY
+
+  - symbol: POLYCAB
+    exchange: NSE
+    segment: CASH
+    name: POLYCAB
+
+  - symbol: OIL
+    exchange: NSE
+    segment: CASH
+    name: OIL
+
+  - symbol: ALKEM
+    exchange: NSE
+    segment: CASH
+    name: ALKEM
+
+  - symbol: BDL
+    exchange: NSE
+    segment: CASH
+    name: BDL
+
+  - symbol: WAAREEENER
+    exchange: NSE
+    segment: CASH
+    name: WAAREEENER
+
+  - symbol: HINDPETRO
+    exchange: NSE
+    segment: CASH
+    name: HINDPETRO
+
+  - symbol: POLICYBZR
+    exchange: NSE
+    segment: CASH
+    name: POLICYBZR
+
+  - symbol: BANKINDIA
+    exchange: NSE
+    segment: CASH
+    name: BANKINDIA
+
+  - symbol: GMRAIRPORT
+    exchange: NSE
+    segment: CASH
+    name: GMRAIRPORT
+
+  - symbol: NHPC
+    exchange: NSE
+    segment: CASH
+    name: NHPC
+
+  - symbol: M&MFIN
+    exchange: NSE
+    segment: CASH
+    name: M&MFIN
+
+  - symbol: PIIND
+    exchange: NSE
+    segment: CASH
+    name: PIIND
+
+  - symbol: TATATECH
+    exchange: NSE
+    segment: CASH
+    name: TATATECH
+
+  - symbol: MANKIND
+    exchange: NSE
+    segment: CASH
+    name: MANKIND
+
+  - symbol: MRF
+    exchange: NSE
+    segment: CASH
+    name: MRF
+
+  - symbol: OBEROIRLTY
+    exchange: NSE
+    segment: CASH
+    name: OBEROIRLTY
+
+  - symbol: INDUSTOWER
+    exchange: NSE
+    segment: CASH
+    name: INDUSTOWER
+
+  - symbol: ACC
+    exchange: NSE
+    segment: CASH
+    name: ACC
+
+  - symbol: YESBANK
+    exchange: NSE
+    segment: CASH
+    name: YESBANK
+
+  - symbol: SJVN
+    exchange: NSE
+    segment: CASH
+    name: SJVN
+
+  - symbol: SOLARINDS
+    exchange: NSE
+    segment: CASH
+    name: SOLARINDS
+
+  - symbol: LUPIN
+    exchange: NSE
+    segment: CASH
+    name: LUPIN
+
+  - symbol: INDIANB
+    exchange: NSE
+    segment: CASH
+    name: INDIANB
+
+  - symbol: PATANJALI
+    exchange: NSE
+    segment: CASH
+    name: PATANJALI
+
+  - symbol: HDFCAMC
+    exchange: NSE
+    segment: CASH
+    name: HDFCAMC
+
+  - symbol: RVNL
+    exchange: NSE
+    segment: CASH
+    name: RVNL
+
+  - symbol: BHARATFORG
+    exchange: NSE
+    segment: CASH
+    name: BHARATFORG
+
+  - symbol: TATACOMM
+    exchange: NSE
+    segment: CASH
+    name: TATACOMM
+
+  - symbol: MFSL
+    exchange: NSE
+    segment: CASH
+    name: MFSL
+
+  - symbol: SRF
+    exchange: NSE
+    segment: CASH
+    name: SRF
+
+  - symbol: MARICO
+    exchange: NSE
+    segment: CASH
+    name: MARICO
+
+  - symbol: NATIONALUM
+    exchange: NSE
+    segment: CASH
+    name: NATIONALUM
+
+  - symbol: NTPCGREEN
+    exchange: NSE
+    segment: CASH
+    name: NTPCGREEN
+
+  - symbol: MAHABANK
+    exchange: NSE
+    segment: CASH
+    name: MAHABANK
+
+  - symbol: IRCTC
+    exchange: NSE
+    segment: CASH
+    name: IRCTC
+
+  - symbol: BANDHANBNK
+    exchange: NSE
+    segment: CASH
+    name: BANDHANBNK
+
+  - symbol: JUBLFOOD
+    exchange: NSE
+    segment: CASH
+    name: JUBLFOOD
+
+  - symbol: IGL
+    exchange: NSE
+    segment: CASH
+    name: IGL
+
+  - symbol: PHOENIXLTD
+    exchange: NSE
+    segment: CASH
+    name: PHOENIXLTD
+
+  - symbol: BHARTIHEXA
+    exchange: NSE
+    segment: CASH
+    name: BHARTIHEXA
+
+  - symbol: BIOCON
+    exchange: NSE
+    segment: CASH
+    name: BIOCON
+
+  - symbol: MAZDOCK
+    exchange: NSE
+    segment: CASH
+    name: MAZDOCK
+
+  - symbol: LTF
+    exchange: NSE
+    segment: CASH
+    name: LTF
+
+  - symbol: LICHSGFIN
+    exchange: NSE
+    segment: CASH
+    name: LICHSGFIN
+
+  - symbol: NMDC
+    exchange: NSE
+    segment: CASH
+    name: NMDC
+
+  - symbol: APLAPOLLO
+    exchange: NSE
+    segment: CASH
+    name: APLAPOLLO
+
+  - symbol: TATAELXSI
+    exchange: NSE
+    segment: CASH
+    name: TATAELXSI
+
+  - symbol: FEDERALBNK
+    exchange: NSE
+    segment: CASH
+    name: FEDERALBNK
+
+  - symbol: PETRONET
+    exchange: NSE
+    segment: CASH
+    name: PETRONET
 
   - symbol: MPHASIS
     exchange: NSE
     segment: CASH
-    name: Mphasis Ltd
+    name: MPHASIS
 
-  - symbol: MOSCHIP
+  - symbol: CUMMINSIND
     exchange: NSE
     segment: CASH
-    name: Moschip Technologies Ltd
+    name: CUMMINSIND
+
+  - symbol: IDFCFIRSTB
+    exchange: NSE
+    segment: CASH
+    name: IDFCFIRSTB
+
+  - symbol: HINDZINC
+    exchange: NSE
+    segment: CASH
+    name: HINDZINC
+
+  - symbol: ASTRAL
+    exchange: NSE
+    segment: CASH
+    name: ASTRAL
+
+  - symbol: OLAELEC
+    exchange: NSE
+    segment: CASH
+    name: OLAELEC
+
+  - symbol: MUTHOOTFIN
+    exchange: NSE
+    segment: CASH
+    name: MUTHOOTFIN
+
+  - symbol: AUBANK
+    exchange: NSE
+    segment: CASH
+    name: AUBANK
+
+  - symbol: VOLTAS
+    exchange: NSE
+    segment: CASH
+    name: VOLTAS
+
+  - symbol: PRESTIGE
+    exchange: NSE
+    segment: CASH
+    name: PRESTIGE
+
+  - symbol: DIXON
+    exchange: NSE
+    segment: CASH
+    name: DIXON
+
+  - symbol: ABCAPITAL
+    exchange: NSE
+    segment: CASH
+    name: ABCAPITAL
+
+  - symbol: KALYANKJIL
+    exchange: NSE
+    segment: CASH
+    name: KALYANKJIL
+
+  - symbol: COCHINSHIP
+    exchange: NSE
+    segment: CASH
+    name: COCHINSHIP
+
+  - symbol: BSE
+    exchange: NSE
+    segment: CASH
+    name: BSE
+
+  - symbol: APOLLOTYRE
+    exchange: NSE
+    segment: CASH
+    name: APOLLOTYRE
+
+  - symbol: PREMIERENE
+    exchange: NSE
+    segment: CASH
+    name: PREMIERENE
+
+  - symbol: NYKAA
+    exchange: NSE
+    segment: CASH
+    name: NYKAA
+
+  - symbol: GLENMARK
+    exchange: NSE
+    segment: CASH
+    name: GLENMARK
+
+  - symbol: AUROPHARMA
+    exchange: NSE
+    segment: CASH
+    name: AUROPHARMA
+
+  - symbol: UPL
+    exchange: NSE
+    segment: CASH
+    name: UPL
+
+  - symbol: PERSISTENT
+    exchange: NSE
+    segment: CASH
+    name: PERSISTENT
+
+  - symbol: COLPAL
+    exchange: NSE
+    segment: CASH
+    name: COLPAL
+
+  - symbol: MAXHEALTH
+    exchange: NSE
+    segment: CASH
+    name: MAXHEALTH
+
+  - symbol: SONACOMS
+    exchange: NSE
+    segment: CASH
+    name: SONACOMS
+
+  - symbol: SUPREMEIND
+    exchange: NSE
+    segment: CASH
+    name: SUPREMEIND
+
+  - symbol: CONCOR
+    exchange: NSE
+    segment: CASH
+    name: CONCOR
+
+  - symbol: KPITTECH
+    exchange: NSE
+    segment: CASH
+    name: KPITTECH
+
+  - symbol: TORNTPOWER
+    exchange: NSE
+    segment: CASH
+    name: TORNTPOWER
+
+  - symbol: PAGEIND
+    exchange: NSE
+    segment: CASH
+    name: PAGEIND
+
+  - symbol: TIINDIA
+    exchange: NSE
+    segment: CASH
+    name: TIINDIA
+
+  - symbol: IRB
+    exchange: NSE
+    segment: CASH
+    name: IRB
+
+  - symbol: COFORGE
+    exchange: NSE
+    segment: CASH
+    name: COFORGE
+
+  - symbol: OFSS
+    exchange: NSE
+    segment: CASH
+    name: OFSS
+
+  - symbol: SBICARD
+    exchange: NSE
+    segment: CASH
+    name: SBICARD
+
+  - symbol: EXIDEIND
+    exchange: NSE
+    segment: CASH
+    name: EXIDEIND
+
+  - symbol: ESCORTS
+    exchange: NSE
+    segment: CASH
+    name: ESCORTS
+
+  - symbol: PAYTM
+    exchange: NSE
+    segment: CASH
+    name: PAYTM
+
+  - symbol: ADANIENT
+    exchange: NSE
+    segment: CASH
+    name: ADANIENT
+
+  - symbol: SBILIFE
+    exchange: NSE
+    segment: CASH
+    name: SBILIFE
+
+  - symbol: INDUSINDBK
+    exchange: NSE
+    segment: CASH
+    name: INDUSINDBK
+
+  - symbol: ADANIPORTS
+    exchange: NSE
+    segment: CASH
+    name: ADANIPORTS
+
+  - symbol: BHARTIARTL
+    exchange: NSE
+    segment: CASH
+    name: BHARTIARTL
+
+  - symbol: SBIN
+    exchange: NSE
+    segment: CASH
+    name: SBIN
+
+  - symbol: SHRIRAMFIN
+    exchange: NSE
+    segment: CASH
+    name: SHRIRAMFIN
+
+  - symbol: HEROMOTOCO
+    exchange: NSE
+    segment: CASH
+    name: HEROMOTOCO
+
+  - symbol: EICHERMOT
+    exchange: NSE
+    segment: CASH
+    name: EICHERMOT
+
+  - symbol: ASIANPAINT
+    exchange: NSE
+    segment: CASH
+    name: ASIANPAINT
+
+  - symbol: NTPC
+    exchange: NSE
+    segment: CASH
+    name: NTPC
+
+  - symbol: ONGC
+    exchange: NSE
+    segment: CASH
+    name: ONGC
+
+  - symbol: AXISBANK
+    exchange: NSE
+    segment: CASH
+    name: AXISBANK
+
+  - symbol: SUNPHARMA
+    exchange: NSE
+    segment: CASH
+    name: SUNPHARMA
+
+  - symbol: COALINDIA
+    exchange: NSE
+    segment: CASH
+    name: COALINDIA
+
+  - symbol: TECHM
+    exchange: NSE
+    segment: CASH
+    name: TECHM
+
+  - symbol: MARUTI
+    exchange: NSE
+    segment: CASH
+    name: MARUTI
+
+  - symbol: JSWSTEEL
+    exchange: NSE
+    segment: CASH
+    name: JSWSTEEL
+
+  - symbol: INFY
+    exchange: NSE
+    segment: CASH
+    name: INFY
+
+  - symbol: GRASIM
+    exchange: NSE
+    segment: CASH
+    name: GRASIM
+
+  - symbol: JIOFIN
+    exchange: NSE
+    segment: CASH
+    name: JIOFIN
+
+  - symbol: BAJAJFINSV
+    exchange: NSE
+    segment: CASH
+    name: BAJAJFINSV
+
+  - symbol: HDFCLIFE
+    exchange: NSE
+    segment: CASH
+    name: HDFCLIFE
+
+  - symbol: TATASTEEL
+    exchange: NSE
+    segment: CASH
+    name: TATASTEEL
+
+  - symbol: LT
+    exchange: NSE
+    segment: CASH
+    name: LT
+
+  - symbol: DRREDDY
+    exchange: NSE
+    segment: CASH
+    name: DRREDDY
+
+  - symbol: TATACONSUM
+    exchange: NSE
+    segment: CASH
+    name: TATACONSUM
+
+  - symbol: ETERNAL
+    exchange: NSE
+    segment: CASH
+    name: ETERNAL
+
+  - symbol: BEL
+    exchange: NSE
+    segment: CASH
+    name: BEL
+
+  - symbol: TCS
+    exchange: NSE
+    segment: CASH
+    name: TCS
+
+  - symbol: CIPLA
+    exchange: NSE
+    segment: CASH
+    name: CIPLA
+
+  - symbol: BAJFINANCE
+    exchange: NSE
+    segment: CASH
+    name: BAJFINANCE
+
+  - symbol: WIPRO
+    exchange: NSE
+    segment: CASH
+    name: WIPRO
+
+  - symbol: ITC
+    exchange: NSE
+    segment: CASH
+    name: ITC
+
+  - symbol: RELIANCE
+    exchange: NSE
+    segment: CASH
+    name: RELIANCE
+
+  - symbol: APOLLOHOSP
+    exchange: NSE
+    segment: CASH
+    name: APOLLOHOSP
+
+  - symbol: TATAMOTORS
+    exchange: NSE
+    segment: CASH
+    name: TATAMOTORS
+
+  - symbol: HINDALCO
+    exchange: NSE
+    segment: CASH
+    name: HINDALCO
+
+  - symbol: KOTAKBANK
+    exchange: NSE
+    segment: CASH
+    name: KOTAKBANK
+
+  - symbol: POWERGRID
+    exchange: NSE
+    segment: CASH
+    name: POWERGRID
+
+  - symbol: HINDUNILVR
+    exchange: NSE
+    segment: CASH
+    name: HINDUNILVR
+
+  - symbol: ULTRACEMCO
+    exchange: NSE
+    segment: CASH
+    name: ULTRACEMCO
+
+  - symbol: NESTLEIND
+    exchange: NSE
+    segment: CASH
+    name: NESTLEIND
+
+  - symbol: HDFCBANK
+    exchange: NSE
+    segment: CASH
+    name: HDFCBANK
+
+  - symbol: BAJAJ-AUTO
+    exchange: NSE
+    segment: CASH
+    name: BAJAJ-AUTO
+
+  - symbol: M&M
+    exchange: NSE
+    segment: CASH
+    name: M&M
+
+  - symbol: TITAN
+    exchange: NSE
+    segment: CASH
+    name: TITAN
+
+  - symbol: TRENT
+    exchange: NSE
+    segment: CASH
+    name: TRENT
+
+  - symbol: ICICIBANK
+    exchange: NSE
+    segment: CASH
+    name: ICICIBANK
+
+  - symbol: HCLTECH
+    exchange: NSE
+    segment: CASH
+    name: HCLTECH

@@ -29,7 +29,7 @@ func GetCandles(stock *models.Stock, startTime string, endTime string) ([]models
 	}
 
 	if resp.IsError() {
-		return empty, fmt.Errorf("unauthorized network request")
+		return empty, fmt.Errorf("unauthorized network request: %v", resp.StatusCode())
 	}
 
 	if body.Status != "SUCCESS" {
