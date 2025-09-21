@@ -5,6 +5,7 @@ import (
 	"eeye/src/config"
 	"eeye/src/constants"
 	"eeye/src/models"
+	"eeye/src/utils"
 	"fmt"
 	"log"
 	"time"
@@ -89,7 +90,7 @@ func FetchAllCandles(stock *models.Stock) ([]models.Candle, error) {
 		ORDER BY timestamp ASC
 	`, stock.Symbol, config.DBConfig.Tz)
 
-	var empty = []models.Candle{}
+	var empty = utils.EmptySlice[models.Candle]()
 	var res = make([]models.Candle, 0, constants.LookBackDays)
 
 	if err != nil {

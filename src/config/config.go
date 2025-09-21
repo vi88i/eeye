@@ -2,6 +2,7 @@ package config
 
 import (
 	"eeye/src/constants"
+	"eeye/src/utils"
 	"log"
 	"os"
 	"strconv"
@@ -15,7 +16,7 @@ var TradingAPIConfig = struct {
 	APIVersion  string
 	XAPIVersion string
 	RateLimit   int
-}{}
+}{RateLimit: constants.MinRequestPerSecond}
 
 var DBConfig = struct {
 	Host     string
@@ -50,15 +51,23 @@ func Load() {
 
 	concurrency, err := strconv.Atoi(os.Getenv("EEYE_CONCURRENCY"))
 	if err == nil {
-		StepsConfig.Concurrency = concurrency
+		StepsConfig.Concurrency = utils.Clamp[int, int](
+			concurrency,
+			constants.MinConcurrency,
+			constants.MaxConcurrency,
+		)
 	} else {
 		log.Println("invalid EEYE_CONCURRENCY")
 	}
 
 	rateLimit, err := strconv.Atoi(os.Getenv("GROWW_RATE_LIMIT_PER_SECOND"))
 	if err == nil {
-		TradingAPIConfig.RateLimit = 1
+		TradingAPIConfig.RateLimit = utils.Clamp[int, int](
+			rateLimit,
+			constants.MinRequestPerSecond,
+			constants.MaxRequestPerSecond,
+		)
 	} else {
-		TradingAPIConfig.RateLimit = rateLimit
+		log.Println("invalid GROWW_RATE_LIMIT_PER_SECOND")
 	}
 }

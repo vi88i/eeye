@@ -3,6 +3,7 @@ package api
 import (
 	"eeye/src/constants"
 	"eeye/src/models"
+	"eeye/src/utils"
 	"fmt"
 	"log"
 	"time"
@@ -11,7 +12,7 @@ import (
 func GetCandles(stock *models.Stock, startTime string, endTime string) ([]models.Candle, error) {
 	log.Printf("fetching candles for %v from %v to %v\n", stock.Symbol, startTime, endTime)
 	body := models.CandlesResponse{}
-	empty := []models.Candle{}
+	empty := utils.EmptySlice[models.Candle]()
 	
 	resp, err := Client.
 		R().

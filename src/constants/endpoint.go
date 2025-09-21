@@ -17,3 +17,8 @@ const (
 const (
 	LookBackDays = 1080
 )
+
+const (
+	MinRequestPerSecond = 1
+	MaxRequestPerSecond = 10
+)

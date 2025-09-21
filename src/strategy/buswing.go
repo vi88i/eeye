@@ -4,6 +4,7 @@ import (
 	"eeye/src/config"
 	"eeye/src/models"
 	"eeye/src/steps"
+	"eeye/src/utils"
 	"log"
 	"strings"
 	"sync"
@@ -74,7 +75,7 @@ func BullishSwing(stocks []models.Stock) {
 		wg.Wait()
 	}()
 
-	filtered := []string{}
+	filtered := utils.EmptySlice[string]()
 	for stock := range out {
 		filtered = append(filtered, stock.Symbol)
 	}
