@@ -24,9 +24,9 @@ func isSolid(candle *models.Candle) bool {
 		total = high - low
 	)
 
-	if body >= 0.7*total &&
-		upper <= 0.15*body &&
-		lower <= 0.15*body {
+	if body >= 0.6*total &&
+		upper <= 0.25*body &&
+		lower <= 0.25*body {
 		log.Printf("Solid Bullish candle: %v\n", candle.Symbol)
 		return true
 	}

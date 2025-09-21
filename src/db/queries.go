@@ -48,7 +48,8 @@ func GetLastCandle(symbol string) (models.Candle, error) {
 func BackfillCandles(stock *models.Stock, candles []models.Candle) error {
 	log.Printf("backfilling %d candles for %v\n", len(candles), stock.Symbol)
 	entries := make([][]any, 0, len(candles))
-	for _, candle := range candles {
+	for i := range candles {
+		candle := &candles[i]
 		entries = append(entries, []any{
 			candle.Symbol,
 			candle.Open,

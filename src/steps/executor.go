@@ -8,12 +8,12 @@ func Executor(steps []func() bool) bool {
 		out = make(chan bool)
 	)
 
-	for _, step := range steps {
+	for i := range steps {
 		wg.Add(1)
 
 		go func() {
 			defer wg.Done()
-			v := step()
+			v := steps[i]()
 			out <- v
 		}()
 	}

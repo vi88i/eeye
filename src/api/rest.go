@@ -37,15 +37,16 @@ func GetCandles(stock *models.Stock, startTime string, endTime string) ([]models
 	}
 
 	candles := make([]models.Candle, 0, len(body.Payload.Candles))
-	for _, rawCandle := range body.Payload.Candles {
+	for i := range body.Payload.Candles {
+		c := &body.Payload.Candles[i]
 		candle := models.Candle{
 			Symbol: stock.Symbol,
-			Timestamp: time.Unix(int64(rawCandle[constants.CandleTimestampIndex].(float64)), 0),
-			Open: rawCandle[constants.CandleOpenIndex].(float64),
-			High: rawCandle[constants.CandleHighIndex].(float64),
-			Low: rawCandle[constants.CandleLowIndex].(float64),
-			Close: rawCandle[constants.CandleCloseIndex].(float64),
-			Volume: uint64(rawCandle[constants.CandleVolumeIndex].(float64)),
+			Timestamp: time.Unix(int64(c[constants.CandleTimestampIndex].(float64)), 0),
+			Open: c[constants.CandleOpenIndex].(float64),
+			High: c[constants.CandleHighIndex].(float64),
+			Low: c[constants.CandleLowIndex].(float64),
+			Close: c[constants.CandleCloseIndex].(float64),
+			Volume: uint64(c[constants.CandleVolumeIndex].(float64)),
 		}
 
 		candles = append(candles, candle)

@@ -30,7 +30,8 @@ func VolumeScreener(
 
 		sum := 0.0
 		volumeMA := make([]float64, 0, constants.LookBackDays)
-		for index, candle := range candles {
+		for index := range candles {
+			candle := &candles[index]
 			sum += float64(candle.Volume)
 			if index + 1 >= windowSize {
 				volumeMA = append(volumeMA, sum / windowSize)
