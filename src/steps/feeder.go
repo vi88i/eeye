@@ -7,7 +7,7 @@ import (
 )
 
 const (
-	Delta = 0 // additional sleep time to avoid 429 errors
+	Delta = 100 // additional sleep time to avoid 429 errors
 )
 
 func Feeder(in chan *models.Stock, stocks []models.Stock) {
