@@ -14,6 +14,7 @@ var TradingAPIConfig = struct {
 	BaseURL     string
 	APIVersion  string
 	XAPIVersion string
+	RateLimit   int
 }{}
 
 var DBConfig = struct {
@@ -52,5 +53,12 @@ func Load() {
 		StepsConfig.Concurrency = concurrency
 	} else {
 		log.Println("invalid EEYE_CONCURRENCY")
+	}
+
+	rateLimit, err := strconv.Atoi(os.Getenv("GROWW_RATE_LIMIT_PER_SECOND"))
+	if err == nil {
+		TradingAPIConfig.RateLimit = 1
+	} else {
+		TradingAPIConfig.RateLimit = rateLimit
 	}
 }

@@ -67,12 +67,7 @@ func BullishSwing(stocks []models.Stock) {
 		go worker(in, out, &wg)
 	}
 
-	go func() {
-		for _, stock := range stocks {
-			in <- &stock
-		}
-		close(in)
-	}()
+	steps.Feeder(in, stocks)
 
 	go func() {
 		defer close(out)
