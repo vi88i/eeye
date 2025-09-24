@@ -33,17 +33,17 @@ func VolumeScreener(
 		for index := range candles {
 			candle := &candles[index]
 			sum += float64(candle.Volume)
-			if index + 1 >= windowSize {
-				volumeMA = append(volumeMA, sum / windowSize)
-				sum -= float64(candles[index - windowSize + 1].Volume)
+			if index+1 >= windowSize {
+				volumeMA = append(volumeMA, sum/windowSize)
+				sum -= float64(candles[index-windowSize+1].Volume)
 			}
 		}
 
 		maLength := len(volumeMA)
-		test := screen(float64(candles[length - 1].Volume), volumeMA[maLength - 1])
+		test := screen(float64(candles[length-1].Volume), volumeMA[maLength-1])
 		if !test {
 			log.Printf("[%v] %v failed volume screener test\n", strategy, stock.Symbol)
-		} 
+		}
 		return test
 	}
 }

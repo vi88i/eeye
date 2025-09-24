@@ -16,12 +16,12 @@ type RawCandle = [6]any
 
 type CandlePayload struct {
 	Candles   []RawCandle `json:"candles"`
-	StartTime string `json:"start_time"`
-	EndTime   string `json:"end_time"`
-	Interval  uint `json:"interval_in_minutes"`
+	StartTime string      `json:"start_time"`
+	EndTime   string      `json:"end_time"`
+	Interval  uint        `json:"interval_in_minutes"`
 }
 
 type CandlesResponse struct {
-	Status  string `json:"status"`
+	Status  string        `json:"status"`
 	Payload CandlePayload `json:"payload"`
 }

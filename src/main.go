@@ -31,7 +31,7 @@ func main() {
 	db.Connect()
 
 	go func() {
-		strategy.BullishSwing(stocks)
+		strategy.Executor(stocks)
 	}()
 
 	quit := make(chan os.Signal, 1)

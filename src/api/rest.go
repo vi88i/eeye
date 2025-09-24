@@ -13,7 +13,12 @@ func GetCandles(stock *models.Stock, startTime string, endTime string) ([]models
 	log.Printf("fetching candles for %v from %v to %v\n", stock.Symbol, startTime, endTime)
 	body := models.CandlesResponse{}
 	empty := utils.EmptySlice[models.Candle]()
-	
+
+	if startTime >= endTime {
+		log.Printf("start time and end time are the same for %v, returning empty slice\n", stock.Symbol)
+		return empty, nil
+	}
+
 	resp, err := Client.
 		R().
 		SetQueryParam("exchange", stock.Exchange).
@@ -41,13 +46,13 @@ func GetCandles(stock *models.Stock, startTime string, endTime string) ([]models
 	for i := range body.Payload.Candles {
 		c := &body.Payload.Candles[i]
 		candle := models.Candle{
-			Symbol: stock.Symbol,
+			Symbol:    stock.Symbol,
 			Timestamp: time.Unix(int64(c[constants.CandleTimestampIndex].(float64)), 0),
-			Open: c[constants.CandleOpenIndex].(float64),
-			High: c[constants.CandleHighIndex].(float64),
-			Low: c[constants.CandleLowIndex].(float64),
-			Close: c[constants.CandleCloseIndex].(float64),
-			Volume: uint64(c[constants.CandleVolumeIndex].(float64)),
+			Open:      c[constants.CandleOpenIndex].(float64),
+			High:      c[constants.CandleHighIndex].(float64),
+			Low:       c[constants.CandleLowIndex].(float64),
+			Close:     c[constants.CandleCloseIndex].(float64),
+			Volume:    uint64(c[constants.CandleVolumeIndex].(float64)),
 		}
 
 		candles = append(candles, candle)

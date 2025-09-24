@@ -1,5 +1,5 @@
 package constants
 
 const (
-	TimestampFmt   = "2006-01-02 15:04:05"
+	TimestampFmt = "2006-01-02 15:04:05"
 )

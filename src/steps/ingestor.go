@@ -17,7 +17,7 @@ func Ingestor(stock *models.Stock) error {
 	}
 
 	start := utils.GetFormattedTimestamp(latestCandle.Timestamp.AddDate(0, 0, 1))
-	end := utils.GetFormattedTimestamp(time.Now().UTC().Truncate(24 * time.Hour).AddDate(0, 0, 1))
+	end := utils.GetFormattedTimestamp(time.Now().UTC().Truncate(24*time.Hour).AddDate(0, 0, 1))
 	newCandles, err := api.GetCandles(stock, start, end)
 	if err != nil {
 		return fmt.Errorf("failed to fetch latest candles for %v: %w", stock.Symbol, err)

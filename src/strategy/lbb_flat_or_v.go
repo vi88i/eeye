@@ -6,7 +6,7 @@ import (
 	"log"
 )
 
-func bullishSwingWorker(strategyName string, in chan *models.Stock, out chan *models.Stock) {
+func llbBullishWorker(strategyName string, in chan *models.Stock, out chan *models.Stock) {
 	for stock := range in {
 		if err := steps.Ingestor(stock); err != nil {
 			log.Printf("ingestion failed for %v: %v\n", stock.Symbol, err)
@@ -23,20 +23,6 @@ func bullishSwingWorker(strategyName string, in chan *models.Stock, out chan *mo
 				strategyName,
 				stock,
 			),
-			steps.VolumeScreener(
-				strategyName,
-				stock,
-				func(currentVolume float64, averageVolume float64) bool {
-					return currentVolume >= averageVolume
-				},
-			),
-			steps.RSIScreener(
-				strategyName,
-				stock,
-				func(currentRSI float64) bool {
-					return currentRSI >= 40.0 && currentRSI <= 60.0
-				},
-			),
 			steps.LowerBollingerBandFlatOrVShape(
 				strategyName,
 				stock,
@@ -51,10 +37,10 @@ func bullishSwingWorker(strategyName string, in chan *models.Stock, out chan *mo
 	}
 }
 
-func bullishSwing(stocks []models.Stock) string {
+func lowerBollingerBandBullish(stocks []models.Stock) string {
 	return steps.Worker(
-		"Bullish Swing",
+		"Lower Bollinger Band Bullish",
 		stocks,
-		bullishSwingWorker,
+		llbBullishWorker,
 	)
 }
