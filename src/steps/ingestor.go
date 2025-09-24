@@ -9,15 +9,21 @@ import (
 	"time"
 )
 
-// Ingestor fetches latest candles for all stocks and backfills the database.
 func Ingestor(stock *models.Stock) error {
 	latestCandle, err := db.GetLastCandle(stock.Symbol)
 	if err != nil {
 		return fmt.Errorf("failed to fetch latest candle for %v: %w", stock.Symbol, err)
 	}
 
-	start := utils.GetFormattedTimestamp(latestCandle.Timestamp.AddDate(0, 0, 1))
-	end := utils.GetFormattedTimestamp(time.Now().UTC().Truncate(24*time.Hour).AddDate(0, 0, 1))
+	startOfDayPlusOne := func(t time.Time) time.Time {
+		return t.UTC().Truncate(24*time.Hour).AddDate(0, 0, 1)
+	}
+
+	var (
+		start = utils.GetFormattedTimestamp(startOfDayPlusOne(latestCandle.Timestamp))
+		end   = utils.GetFormattedTimestamp(startOfDayPlusOne(time.Now()))
+	)
+
 	newCandles, err := api.GetCandles(stock, start, end)
 	if err != nil {
 		return fmt.Errorf("failed to fetch latest candles for %v: %w", stock.Symbol, err)

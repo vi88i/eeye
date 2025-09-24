@@ -41,6 +41,10 @@ func EMAFakeBreakdown(
 	period int,
 ) func() bool {
 	return func() bool {
+		const (
+			MinEMAPoints = 1
+		)
+
 		candles, err := getCachedCandles(stock)
 		if err != nil {
 			return false
@@ -52,12 +56,11 @@ func EMAFakeBreakdown(
 			candleLength = len(candles)
 		)
 
-		if emaLength < 1 {
+		if emaLength < MinEMAPoints {
 			log.Printf("insufficient candles for %v screener: %v", strategyName, stock.Symbol)
 			return false
 		}
 
-		log.Printf("EMA %v for %v: %v", period, stock.Symbol, values[emaLength-1])
 		return (candles[candleLength-1].Low <= values[emaLength-1]) &&
 			(candles[candleLength-1].High > values[emaLength-1])
 	}

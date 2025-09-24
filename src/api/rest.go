@@ -11,8 +11,10 @@ import (
 
 func GetCandles(stock *models.Stock, startTime string, endTime string) ([]models.Candle, error) {
 	log.Printf("fetching candles for %v from %v to %v\n", stock.Symbol, startTime, endTime)
-	body := models.CandlesResponse{}
-	empty := utils.EmptySlice[models.Candle]()
+	var (
+		body  = models.CandlesResponse{}
+		empty = utils.EmptySlice[models.Candle]()
+	)
 
 	if startTime >= endTime {
 		log.Printf("start time and end time are the same for %v, returning empty slice\n", stock.Symbol)

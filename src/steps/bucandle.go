@@ -106,13 +106,17 @@ func BullishCandleScreener(
 	stock *models.Stock,
 ) func() bool {
 	return func() bool {
+		const (
+			MinPoints = 1
+		)
+
 		candles, err := getCachedCandles(stock)
 		if err != nil {
 			return false
 		}
 
 		length := len(candles)
-		if length <= 0 {
+		if length < MinPoints {
 			log.Printf("insufficient candles for candle pattern detection: %v\n", stock.Symbol)
 			return false
 		}

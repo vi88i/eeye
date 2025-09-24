@@ -10,15 +10,15 @@ import (
 	"time"
 )
 
-const (
-	Delta = 100 // additional sleep time to avoid 429 errors
-)
-
 func Worker(
 	strategyName string,
 	stocks []models.Stock,
 	work func(strategyName string, in chan *models.Stock, out chan *models.Stock),
 ) string {
+	const (
+		Delta = 100
+	)
+
 	var (
 		wg  = sync.WaitGroup{}
 		in  = make(chan *models.Stock, config.StepsConfig.Concurrency)

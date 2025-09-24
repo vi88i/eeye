@@ -6,24 +6,23 @@ import (
 	"log"
 )
 
-const (
-	windowSize = 20
-)
-
-// It computes the 20-day MA and applies the screening function to filter stocks.
 func VolumeScreener(
 	strategy string,
 	stock *models.Stock,
 	screen func(currentVolume float64, averageVolume float64) bool,
 ) func() bool {
 	return func() bool {
+		const (
+			Period = 20
+		)
+
 		candles, err := getCachedCandles(stock)
 		if err != nil {
 			return false
 		}
 
 		length := len(candles)
-		if length < windowSize {
+		if length < Period {
 			log.Printf("insufficient candles for volume screener: %v\n", stock.Symbol)
 			return false
 		}
@@ -33,9 +32,9 @@ func VolumeScreener(
 		for index := range candles {
 			candle := &candles[index]
 			sum += float64(candle.Volume)
-			if index+1 >= windowSize {
-				volumeMA = append(volumeMA, sum/windowSize)
-				sum -= float64(candles[index-windowSize+1].Volume)
+			if index+1 >= Period {
+				volumeMA = append(volumeMA, sum/Period)
+				sum -= float64(candles[index-Period+1].Volume)
 			}
 		}
 

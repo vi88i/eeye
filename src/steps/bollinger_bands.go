@@ -6,18 +6,18 @@ import (
 	"math"
 )
 
-const (
-	MinPoints     = 22
-	Period        = 20
-	K             = 2
-	FlatThreshold = 0.0001
-)
-
 func LowerBollingerBandFlatOrVShape(
 	strategy string,
 	stock *models.Stock,
 ) func() bool {
 	return func() bool {
+		const (
+			MinPoints     = 22
+			Period        = 20
+			K             = 2
+			FlatThreshold = 0.0001
+		)
+
 		candles, err := getCachedCandles(stock)
 		if err != nil {
 			return false
@@ -71,7 +71,6 @@ func LowerBollingerBandFlatOrVShape(
 			slope1 := (y2 - y1) / (x2 - x1)
 			slope2 := (y3 - y2) / (x3 - x2)
 
-			// check if flat, float div never give perfect 0 there will be some error
 			isFlat := math.Abs(slope1) < FlatThreshold && math.Abs(slope2) < FlatThreshold
 			isVShape := slope1 < 0 && slope2 > 0
 			if isFlat || isVShape {

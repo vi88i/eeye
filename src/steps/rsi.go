@@ -6,26 +6,23 @@ import (
 	"math"
 )
 
-const (
-	n = 14
-)
-
 func RSIScreener(
 	strategy string,
 	stock *models.Stock,
 	screen func(currentRSI float64) bool,
 ) func() bool {
 	return func() bool {
+		const (
+			Period = 14
+		)
+
 		candles, err := getCachedCandles(stock)
 		if err != nil {
 			return false
 		}
 
 		length := len(candles)
-		/*
-			We need 15 candles minimum to get started with RSI
-		*/
-		if length < n+1 {
+		if length < Period+1 {
 			log.Printf("insufficient candles for RSI screener: %v\n", stock.Symbol)
 			return false
 		}
@@ -36,22 +33,22 @@ func RSIScreener(
 			avg_gain = 0.0
 			avg_loss = 0.0
 		)
-		for i := 1; i <= n; i++ {
+		for i := 1; i <= Period; i++ {
 			diff := candles[i].Close - candles[i-1].Close
 			gain += math.Max(diff, 0)
 			loss += math.Max(-diff, 0)
 		}
 
-		avg_gain = gain / n
-		avg_loss = loss / n
+		avg_gain = gain / Period
+		avg_loss = loss / Period
 
-		for i := n + 1; i < length; i++ {
+		for i := Period + 1; i < length; i++ {
 			diff := candles[i].Close - candles[i-1].Close
 			gain = math.Max(diff, 0)
 			loss = math.Max(-diff, 0)
 
-			avg_gain = ((avg_gain * (n - 1)) + gain) / n
-			avg_loss = ((avg_loss * (n - 1)) + loss) / n
+			avg_gain = ((avg_gain * (Period - 1)) + gain) / Period
+			avg_loss = ((avg_loss * (Period - 1)) + loss) / Period
 		}
 
 		rs := avg_gain / avg_loss

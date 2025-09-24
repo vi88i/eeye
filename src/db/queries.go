@@ -62,9 +62,11 @@ func BackfillCandles(stock *models.Stock, candles []models.Candle) error {
 		})
 	}
 
-	columns := []string{"symbol", "open", "close", "high", "low", "timestamp", "volume"}
-	tableName := "stock_prices"
-	ctx := context.Background()
+	var (
+		columns   = []string{"symbol", "open", "close", "high", "low", "timestamp", "volume"}
+		tableName = "stock_prices"
+		ctx       = context.Background()
+	)
 
 	/*
 		COPY FROM is a PostgreSQL protocol (binary) which helps in efficient insertion.
@@ -90,8 +92,10 @@ func FetchAllCandles(stock *models.Stock) ([]models.Candle, error) {
 		ORDER BY timestamp ASC
 	`, stock.Symbol, config.DBConfig.Tz)
 
-	var empty = utils.EmptySlice[models.Candle]()
-	var res = make([]models.Candle, 0, constants.LookBackDays)
+	var (
+		empty = utils.EmptySlice[models.Candle]()
+		res   = make([]models.Candle, 0, constants.LookBackDays)
+	)
 
 	if err != nil {
 		return empty, fmt.Errorf("query failed: %w", err)
