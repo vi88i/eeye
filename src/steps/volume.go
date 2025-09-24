@@ -17,7 +17,7 @@ func VolumeScreener(
 	screen func(currentVolume float64, averageVolume float64) bool,
 ) func() bool {
 	return func() bool {
-		candles, err := GetCachedCandles(stock)
+		candles, err := getCachedCandles(stock)
 		if err != nil {
 			return false
 		}

@@ -2,17 +2,18 @@ package strategy
 
 import (
 	"eeye/src/models"
-	"fmt"
+	"log"
 )
 
 func Executor(stocks []models.Stock) {
 	results := []string{
 		lowerBollingerBandBullish(stocks),
 		bullishSwing(stocks),
+		emaFakeBreakdown(stocks, 50),
 	}
 
-	fmt.Println("================= Strategy Results =================")
+	log.Println("================= Strategy Results =================")
 	for _, result := range results {
-		fmt.Println(result)
+		log.Println(result)
 	}
 }

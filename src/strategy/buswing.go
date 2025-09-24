@@ -6,7 +6,7 @@ import (
 	"log"
 )
 
-func bullishSwingWorker(strategyName string, in chan *models.Stock, out chan *models.Stock) {
+func bullishSwingWorker(strategyName string, in, out chan *models.Stock) {
 	for stock := range in {
 		if err := steps.Ingestor(stock); err != nil {
 			log.Printf("ingestion failed for %v: %v\n", stock.Symbol, err)

@@ -15,7 +15,7 @@ func init() {
 	cache = make(map[*models.Stock][]models.Candle)
 }
 
-func GetCachedCandles(stock *models.Stock) ([]models.Candle, error) {
+func getCachedCandles(stock *models.Stock) ([]models.Candle, error) {
 	mu.RLock()
 	defer mu.RUnlock()
 

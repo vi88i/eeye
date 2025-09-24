@@ -18,7 +18,7 @@ func LowerBollingerBandFlatOrVShape(
 	stock *models.Stock,
 ) func() bool {
 	return func() bool {
-		candles, err := GetCachedCandles(stock)
+		candles, err := getCachedCandles(stock)
 		if err != nil {
 			return false
 		}
