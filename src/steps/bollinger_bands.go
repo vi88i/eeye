@@ -1,3 +1,6 @@
+// Package steps implements various technical analysis indicators and trading strategies.
+// It provides functions for analyzing price patterns, calculating technical indicators,
+// and screening stocks based on specific criteria.
 package steps
 
 import (
@@ -6,6 +9,12 @@ import (
 	"math"
 )
 
+// LowerBollingerBandFlatOrVShape creates a function that screens for stocks showing
+// a flattening or V-shaped pattern in their lower Bollinger Band. This pattern
+// often indicates potential trend reversal points.
+//
+// The function uses a 20-period Bollinger Band with 2 standard deviations and
+// requires at least 22 data points for calculation.
 func LowerBollingerBandFlatOrVShape(
 	strategy string,
 	stock *models.Stock,
@@ -46,8 +55,8 @@ func LowerBollingerBandFlatOrVShape(
 					diff := candles[j].Close - avg
 					variance = variance + diff*diff
 				}
-				std_dev := math.Sqrt(variance / float64(Period))
-				lbb = append(lbb, avg-K*std_dev)
+				stdDev := math.Sqrt(variance / float64(Period))
+				lbb = append(lbb, avg-K*stdDev)
 				sum -= candles[i+1-Period].Close
 			}
 		}
@@ -58,14 +67,14 @@ func LowerBollingerBandFlatOrVShape(
 			(lastCandle.Close > sma)
 
 		if !hasCandleFullyCrossedSMA {
-			lbb_len := len(lbb)
+			lbbLen := len(lbb)
 			var (
 				x1 = 0.0
-				y1 = lbb[lbb_len-3]
+				y1 = lbb[lbbLen-3]
 				x2 = 1.0
-				y2 = lbb[lbb_len-2]
+				y2 = lbb[lbbLen-2]
 				x3 = 2.0
-				y3 = lbb[lbb_len-1]
+				y3 = lbb[lbbLen-1]
 			)
 
 			slope1 := (y2 - y1) / (x2 - x1)

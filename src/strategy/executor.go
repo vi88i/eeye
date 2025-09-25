@@ -5,6 +5,12 @@ import (
 	"log"
 )
 
+// Executor runs all trading strategies on the given list of stocks.
+// It executes multiple strategies in parallel and logs their results.
+// Current strategies include:
+//   - Lower Bollinger Band bullish pattern
+//   - Bullish swing pattern
+//   - EMA fake breakdown pattern
 func Executor(stocks []models.Stock) {
 	results := []string{
 		lowerBollingerBandBullish(stocks),

@@ -1,3 +1,6 @@
+// Package main is the entry point for the eeye trading system.
+// It initializes the trading environment, loads configurations, and starts
+// the trading strategies execution pipeline.
 package main
 
 import (

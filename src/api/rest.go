@@ -9,6 +9,9 @@ import (
 	"time"
 )
 
+// GetCandles retrieves candlestick data for a given stock within a specified time range.
+// It returns an array of Candle objects containing OHLCV data. If startTime equals endTime,
+// or if there's an error in fetching data, it returns an empty slice and the error if any.
 func GetCandles(stock *models.Stock, startTime string, endTime string) ([]models.Candle, error) {
 	log.Printf("fetching candles for %v from %v to %v\n", stock.Symbol, startTime, endTime)
 	var (

@@ -6,6 +6,15 @@ import (
 	"math"
 )
 
+// RSIScreener creates a function that screens stocks based on their Relative Strength
+// Index (RSI) value. It calculates the 14-period RSI and applies a custom screening
+// function to determine if the stock meets the criteria.
+//
+// Parameters:
+//   - strategy: identifier for logging purposes
+//   - stock: the stock to analyze
+//   - screen: a function that takes the current RSI value and returns true if the
+//     stock passes the screening criteria
 func RSIScreener(
 	strategy string,
 	stock *models.Stock,
@@ -28,10 +37,8 @@ func RSIScreener(
 		}
 
 		var (
-			gain     = 0.0
-			loss     = 0.0
-			avg_gain = 0.0
-			avg_loss = 0.0
+			gain = 0.0
+			loss = 0.0
 		)
 		for i := 1; i <= Period; i++ {
 			diff := candles[i].Close - candles[i-1].Close
@@ -39,19 +46,20 @@ func RSIScreener(
 			loss += math.Max(-diff, 0)
 		}
 
-		avg_gain = gain / Period
-		avg_loss = loss / Period
+		// Initialize average gain and loss
+		avgGain := gain / Period
+		avgLoss := loss / Period
 
 		for i := Period + 1; i < length; i++ {
 			diff := candles[i].Close - candles[i-1].Close
 			gain = math.Max(diff, 0)
 			loss = math.Max(-diff, 0)
 
-			avg_gain = ((avg_gain * (Period - 1)) + gain) / Period
-			avg_loss = ((avg_loss * (Period - 1)) + loss) / Period
+			avgGain = ((avgGain * (Period - 1)) + gain) / Period
+			avgLoss = ((avgLoss * (Period - 1)) + loss) / Period
 		}
 
-		rs := avg_gain / avg_loss
+		rs := avgGain / avgLoss
 		rsi := 100 - (100 / (1 + rs))
 		test := screen(rsi)
 		if !test {

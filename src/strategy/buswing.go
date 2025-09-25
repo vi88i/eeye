@@ -1,3 +1,6 @@
+// Package strategy implements high-level trading strategies.
+// It combines various technical analysis steps to create complete
+// trading strategies and manages their execution.
 package strategy
 
 import (

@@ -28,7 +28,7 @@ func emaFakeBreakdownWorker(period int) func(strategyName string, in, out chan *
 				steps.EMAFakeBreakdown(
 					strategyName,
 					stock,
-					50,
+					period,
 				),
 			}
 

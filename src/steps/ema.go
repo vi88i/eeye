@@ -35,6 +35,14 @@ func ema(candles []models.Candle, stock *models.Stock, period int) []float64 {
 	return values
 }
 
+// EMAFakeBreakdown creates a function that screens for stocks showing a fake breakdown
+// pattern relative to their Exponential Moving Average (EMA). This pattern occurs when
+// price temporarily breaks below the EMA but quickly recovers, indicating a false bearish signal.
+//
+// Parameters:
+//   - strategyName: identifier for logging purposes
+//   - stock: the stock to analyze
+//   - period: the EMA period to use (e.g., 20 for 20-day EMA)
 func EMAFakeBreakdown(
 	strategyName string,
 	stock *models.Stock,

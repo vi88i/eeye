@@ -1,0 +1,21 @@
+linters:
+  enable:
+    - gofmt
+    - revive
+    - govet
+    - errcheck
+    - ineffassign
+
+run:
+  timeout: 5m
+  tests: true
+  
+issues:
+  exclude-use-default: false
+  max-issues-per-linter: 0
+  max-same-issues: 0
+
+output:
+  format: colored-line-number
+  print-issued-lines: true
+  print-linter-name: true

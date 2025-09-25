@@ -8,6 +8,9 @@ import (
 	yaml "gopkg.in/yaml.v3"
 )
 
+// GetStocksFromYaml reads and parses a YAML file containing stock configurations.
+// It returns a slice of Stock objects. The function will panic if the file cannot
+// be read or parsed.
 func GetStocksFromYaml(path string) []models.Stock {
 	data, err := os.ReadFile(path)
 

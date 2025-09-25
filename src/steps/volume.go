@@ -6,6 +6,15 @@ import (
 	"log"
 )
 
+// VolumeScreener creates a function that screens stocks based on their trading volume.
+// It compares the current volume against the average volume using a custom screening
+// function to identify significant volume patterns.
+//
+// Parameters:
+//   - strategy: identifier for logging purposes
+//   - stock: the stock to analyze
+//   - screen: a function that takes the current volume and average volume,
+//     returning true if the stock passes the volume criteria
 func VolumeScreener(
 	strategy string,
 	stock *models.Stock,

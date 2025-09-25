@@ -10,6 +10,15 @@ import (
 	"time"
 )
 
+// Worker processes a list of stocks in parallel using a configurable number of
+// worker goroutines. It applies the given work function to each stock and
+// returns a summary of the results.
+//
+// Parameters:
+//   - strategyName: identifier for logging and result reporting
+//   - stocks: list of stocks to process
+//   - work: function to apply to each stock, receiving input and output channels
+//     for stock processing
 func Worker(
 	strategyName string,
 	stocks []models.Stock,

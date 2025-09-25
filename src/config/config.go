@@ -1,3 +1,6 @@
+// Package config manages the application configuration.
+// It provides structures and functions for loading and accessing
+// configuration parameters for database, API, and trading steps.
 package config
 
 import (
@@ -10,27 +13,46 @@ import (
 	"github.com/joho/godotenv"
 )
 
+// TradingAPIConfig holds configuration for the trading API connection.
+// It includes authentication, endpoint, and rate limiting settings.
 var TradingAPIConfig = struct {
+	// AccessToken is the API authentication token
 	AccessToken string
-	BaseURL     string
-	APIVersion  string
+	// BaseURL is the root URL for API requests
+	BaseURL string
+	// APIVersion specifies the API version to use
+	APIVersion string
+	// XAPIVersion is the custom API version header value
 	XAPIVersion string
-	RateLimit   int
+	// RateLimit defines the maximum API requests per second
+	RateLimit int
 }{RateLimit: constants.MinRequestPerSecond}
 
+// DBConfig holds the PostgreSQL database connection configuration.
 var DBConfig = struct {
-	Host     string
-	Port     string
-	User     string
+	// Host is the database server hostname
+	Host string
+	// Port is the database server port
+	Port string
+	// User is the database username
+	User string
+	// Password is the database user password
 	Password string
-	Name     string
-	Tz       string
+	// Name is the database name to connect to
+	Name string
+	// Tz is the timezone for database connections
+	Tz string
 }{}
 
+// StepsConfig holds configuration for the trading strategy steps execution.
 var StepsConfig = struct {
+	// Concurrency defines how many workers to run in parallel
 	Concurrency int
 }{constants.MinConcurrency}
 
+// Load reads configuration from environment variables and initializes
+// the application's configuration structures. It will panic if required
+// environment variables are missing or invalid.
 func Load() {
 	err := godotenv.Load()
 	if err != nil {

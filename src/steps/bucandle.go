@@ -7,21 +7,21 @@ import (
 
 func isSolid(candle *models.Candle) bool {
 	var (
-		open  = candle.Open
-		close = candle.Close
-		low   = candle.Low
-		high  = candle.High
+		openPrice  = candle.Open
+		closePrice = candle.Close
+		lowPrice   = candle.Low
+		highPrice  = candle.High
 	)
 
-	if open >= close {
+	if openPrice >= closePrice {
 		return false
 	}
 
 	var (
-		body  = close - open
-		upper = high - close
-		lower = open - low
-		total = high - low
+		body  = closePrice - openPrice
+		upper = highPrice - closePrice
+		lower = openPrice - lowPrice
+		total = highPrice - lowPrice
 	)
 
 	if body >= 0.6*total &&
@@ -36,23 +36,23 @@ func isSolid(candle *models.Candle) bool {
 
 func isHammer(candle *models.Candle) bool {
 	var (
-		open  = candle.Open
-		close = candle.Close
-		low   = candle.Low
-		high  = candle.High
+		openPrice  = candle.Open
+		closePrice = candle.Close
+		lowPrice   = candle.Low
+		highPrice  = candle.High
 	)
 
-	if open >= close {
+	if openPrice >= closePrice {
 		return false
 	}
 
 	var (
-		body  = close - open
-		upper = high - close
-		lower = open - low
+		body  = closePrice - openPrice
+		upper = highPrice - closePrice
+		lower = openPrice - lowPrice
 	)
 
-	if lower < 2*body || upper > 0.25*body || (high-close) > body {
+	if lower < 2*body || upper > 0.25*body || (highPrice-closePrice) > body {
 		return false
 	}
 
@@ -62,17 +62,17 @@ func isHammer(candle *models.Candle) bool {
 
 func isEngulfing(candle1 *models.Candle, candle2 *models.Candle) bool {
 	var (
-		open1  = candle1.Open
-		close1 = candle1.Close
-		open2  = candle2.Open
-		close2 = candle2.Close
+		openPrice1  = candle1.Open
+		closePrice1 = candle1.Close
+		openPrice2  = candle2.Open
+		closePrice2 = candle2.Close
 	)
 
-	if close1 >= open1 || close2 <= open2 {
+	if closePrice1 >= openPrice1 || closePrice2 <= openPrice2 {
 		return false
 	}
 
-	if open2 <= close1 && close2 >= open1 {
+	if openPrice2 <= closePrice1 && closePrice2 >= openPrice1 {
 		log.Printf("Engulfing pattern: %v\n", candle1.Symbol)
 		return true
 	}
@@ -82,18 +82,18 @@ func isEngulfing(candle1 *models.Candle, candle2 *models.Candle) bool {
 
 func isPiercing(candle1 *models.Candle, candle2 *models.Candle) bool {
 	var (
-		open1  = candle1.Open
-		close1 = candle1.Close
-		open2  = candle2.Open
-		close2 = candle2.Close
+		openPrice1  = candle1.Open
+		closePrice1 = candle1.Close
+		openPrice2  = candle2.Open
+		closePrice2 = candle2.Close
 	)
 
-	if close1 >= open1 || close2 <= open2 {
+	if closePrice1 >= openPrice1 || closePrice2 <= openPrice2 {
 		return false
 	}
 
-	midpoint := (open1 + close1) / 2
-	if open2 < close1 && close2 > midpoint {
+	midpoint := (openPrice1 + closePrice1) / 2
+	if openPrice2 < closePrice1 && closePrice2 > midpoint {
 		log.Printf("Piercing pattern: %v\n", candle1.Symbol)
 		return true
 	}
@@ -101,6 +101,12 @@ func isPiercing(candle1 *models.Candle, candle2 *models.Candle) bool {
 	return false
 }
 
+// BullishCandleScreener creates a function that screens for stocks showing bullish
+// candlestick patterns. It checks for various bullish patterns including:
+// - Solid bullish candles (strong upward momentum)
+// - Hammer patterns (potential reversal at support)
+// - Engulfing patterns (trend reversal signal)
+// - Piercing patterns (bullish reversal after downtrend)
 func BullishCandleScreener(
 	strategy string,
 	stock *models.Stock,

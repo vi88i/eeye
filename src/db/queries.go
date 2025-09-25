@@ -13,6 +13,8 @@ import (
 	"github.com/jackc/pgx/v4"
 )
 
+// GetLastCandle retrieves the most recent candlestick data for a given stock symbol.
+// The timestamp in the returned candle is adjusted to the timezone specified in DBConfig.
 func GetLastCandle(symbol string) (models.Candle, error) {
 	log.Printf("getting last candle for %s\n", symbol)
 	ctx := context.Background()
@@ -46,6 +48,8 @@ func GetLastCandle(symbol string) (models.Candle, error) {
 	return ret, nil
 }
 
+// BackfillCandles efficiently inserts multiple candlestick records into the database
+// using PostgreSQL's COPY protocol. This is optimized for bulk insertions of historical data.
 func BackfillCandles(stock *models.Stock, candles []models.Candle) error {
 	log.Printf("backfilling %d candles for %v\n", len(candles), stock.Symbol)
 	entries := make([][]any, 0, len(candles))
@@ -81,6 +85,8 @@ func BackfillCandles(stock *models.Stock, candles []models.Candle) error {
 	return nil
 }
 
+// FetchAllCandles retrieves all stored candlestick data for a given stock.
+// The timestamps in the returned candles are adjusted to the timezone specified in DBConfig.
 func FetchAllCandles(stock *models.Stock) ([]models.Candle, error) {
 	log.Printf("fetching all candles: %v\n", stock.Symbol)
 	ctx := context.Background()

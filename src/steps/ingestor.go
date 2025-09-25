@@ -9,6 +9,9 @@ import (
 	"time"
 )
 
+// Ingestor updates the historical price data for a stock by fetching new candles
+// from the API and storing them in the database. It only fetches data newer than
+// the most recent candle in the database to avoid duplicates and minimize API calls.
 func Ingestor(stock *models.Stock) error {
 	latestCandle, err := db.GetLastCandle(stock.Symbol)
 	if err != nil {
