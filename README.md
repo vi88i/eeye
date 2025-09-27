@@ -1,5 +1,5 @@
 # eeye
-`e`agle `e`ye stock screener
+`e`agle `eye` stock screener
 
 # Overview
 
