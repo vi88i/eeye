@@ -1,6 +1,8 @@
+-- Enable TimescaleDB extension
 CREATE EXTENSION IF NOT EXISTS timescaledb;
 
-CREATE TABLE stock_prices (
+-- Create the stock prices table if it doesn't exist
+CREATE TABLE IF NOT EXISTS stock_prices (
   symbol TEXT NOT NULL,
   open NUMERIC(12, 4),
   close NUMERIC(12, 4),
@@ -11,4 +13,14 @@ CREATE TABLE stock_prices (
   PRIMARY KEY (symbol, timestamp)
 );
 
-SELECT create_hypertable('stock_prices', 'timestamp');
+-- Convert to hypertable if not already
+DO $$
+BEGIN
+  IF NOT EXISTS (
+    SELECT 1
+    FROM timescaledb_information.hypertables
+    WHERE hypertable_name = 'stock_prices'
+  ) THEN
+    PERFORM create_hypertable('stock_prices', 'timestamp');
+  END IF;
+END $$;

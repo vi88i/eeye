@@ -1,6 +1,28 @@
 # eeye
 eagle eye stock screener
 
+# Overview
+
+eeye is a stock screener that uses various technical analysis strategies to identify potential trading opportunities in the stock market. It leverages the Groww API to fetch real-time market data and applies a series of screening techniques to filter stocks based on user-defined criteria.
+
+## Features
+
+- Integration with Groww API for real-time stock data
+- Multiple technical analysis strategies (e.g., Bollinger Bands, EMA, RSI)
+- Modular design for easy addition of new strategies
+
+## Workflow
+
+- Add the stock to be screened in `examples/stocks.yml`
+- Run the application using `go run src/main.go`
+- View the results in the console output
+
+## How it works?
+
+1. **Fetch Stock Data**: The application fetches historical stock data from the Groww API.
+2. **Apply Screening Steps**: Each stock is processed through a series of screening steps defined in the strategy executor. These steps include various technical analysis techniques.
+3. **Output Results**: Stocks that pass all screening steps are printed to the console as potential trading opportunities.
+
 # Installation
 
 ## Prerequisites
@@ -36,19 +58,26 @@ cp .env.example .env
 
 ## Database Setup
 
-```cmd
-docker pull timescale/timescaledb:latest-pg14
+Run the database setup script to create and configure the TimescaleDB container:
 
-docker run -d --name eeye-db `
-  -p 5432:5432 `
-  -v eeye-vol:/var/lib/postgresql/data `
-  -e POSTGRES_PASSWORD=root `
-  -e POSTGRES_USER=admin `
-  -e POSTGRES_DB=eeye `
-  timescale/timescaledb:latest-pg14
+```bash
+# On Unix/Linux/MacOS
+chmod +x scripts/setup-db.sh
+./scripts/setup-db.sh
 
-docker exec -it eeye-db psql -U admin -d eeye
+# On Windows (Git Bash or similar)
+sh scripts/setup-db.sh
 ```
+
+The setup script will:
+- Check if the Docker container is running
+- Wait for the database to be ready
+- Verify TimescaleDB extension is available
+- Create the required tables and hypertables
+
+You can run this script multiple times safely - it will not duplicate or overwrite existing data.
+
+Note: If you see an error about the container not running, make sure you've completed step 1 successfully.
 
 ## Pre-commit Hooks
 
