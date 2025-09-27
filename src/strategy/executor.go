@@ -16,6 +16,7 @@ func Executor(stocks []models.Stock) {
 		lowerBollingerBandBullish(stocks),
 		bullishSwing(stocks),
 		emaFakeBreakdown(stocks, 50),
+		rsiEntersBullishSwingZone(stocks),
 	}
 
 	log.Println("================= Strategy Results =================")
