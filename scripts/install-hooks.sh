@@ -9,11 +9,18 @@ fi
 # Create hooks directory if it doesn't exist
 mkdir -p .git/hooks
 
-# Check if golangci-lint is installed
+# Check if golangci-lint is installed, install if not present
 if ! command -v golangci-lint &> /dev/null; then
-    echo "Error: golangci-lint is not installed. Please install it first:"
-    echo "go install github.com/golangci/golangci-lint/cmd/golangci-lint@latest"
-    exit 1
+    echo "Installing golangci-lint..."
+    go install github.com/golangci/golangci-lint/cmd/golangci-lint@latest
+    
+    # Verify installation
+    if ! command -v golangci-lint &> /dev/null; then
+        echo "Error: Failed to install golangci-lint. Please install it manually:"
+        echo "go install github.com/golangci/golangci-lint/cmd/golangci-lint@latest"
+        exit 1
+    fi
+    echo "golangci-lint installed successfully!"
 fi
 
 # Copy pre-commit hook and make it executable

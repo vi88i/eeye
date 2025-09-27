@@ -85,15 +85,6 @@ This project uses pre-commit hooks to ensure code quality. The hooks will:
 - Format Go code using `go fmt`
 - Run `golangci-lint` for code linting
 
-### Prerequisites
-
-1. Install golangci-lint:
-```bash
-go install github.com/golangci/golangci-lint/cmd/golangci-lint@latest
-```
-
-### Installing the Pre-commit Hooks
-
 To install the pre-commit hooks:
 
 1. Make sure you're in the root directory of the project
