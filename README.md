@@ -1,9 +1,9 @@
 # eeye
-eagle eye stock screener
+`e`agle `e`ye stock screener
 
 # Overview
 
-eeye is a stock screener that uses various technical analysis strategies to identify potential trading opportunities in the stock market. It leverages the Groww API to fetch real-time market data and applies a series of screening techniques to filter stocks based on user-defined criteria.
+`eeye` is a stock screener that uses various technical analysis strategies to identify potential trading opportunities in the stock market. It leverages the Groww API to fetch real-time market data and applies a series of screening techniques to filter stocks based on user-defined criteria.
 
 ## Features
 
@@ -13,7 +13,7 @@ eeye is a stock screener that uses various technical analysis strategies to iden
 
 ## Workflow
 
-- Add the stock to be screened in `examples/stocks.yml`
+- Add the stock to be screened in `examples/stocks.yml` (future enhancement: automate syncing of stocks data)
 - Run the application using `go run src/main.go`
 - View the results in the console output
 
