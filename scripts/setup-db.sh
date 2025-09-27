@@ -96,12 +96,12 @@ until docker exec eeye-db pg_isready -U admin > /dev/null 2>&1; do
     sleep 1
 done
 
-# Check if TimescaleDB extension is available
-echo "Checking TimescaleDB extension..."
-if ! docker exec eeye-db psql -U admin -d eeye -c "SELECT * FROM pg_available_extensions WHERE name = 'timescaledb'" | grep -q timescaledb; then
-    echo "Error: TimescaleDB extension is not available in the container."
+# Check if TimescaleDB extension is available and create it
+echo "Setting up TimescaleDB extension..."
+docker exec eeye-db psql -U admin -d eeye -c "CREATE EXTENSION IF NOT EXISTS timescaledb;" || {
+    echo "Error: Failed to create TimescaleDB extension"
     exit 1
-fi
+}
 
 # Apply schema
 echo "Applying database schema..."
