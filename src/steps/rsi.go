@@ -2,9 +2,55 @@ package steps
 
 import (
 	"eeye/src/models"
+	"eeye/src/utils"
 	"log"
 	"math"
 )
+
+func computeRSI(candles []models.Candle, period int) []float64 {
+	var (
+		empty  = utils.EmptySlice[float64]()
+		length = len(candles)
+	)
+
+	if length < period+1 {
+		return empty
+	}
+
+	var (
+		gain = 0.0
+		loss = 0.0
+	)
+	for i := 1; i <= period; i++ {
+		diff := candles[i].Close - candles[i-1].Close
+		gain += math.Max(diff, 0)
+		loss += math.Max(-diff, 0)
+	}
+
+	var (
+		p       = float64(period)
+		avgGain = gain / p
+		avgLoss = loss / p
+		values  = make([]float64, 0, length-period)
+	)
+
+	for i := period + 1; i < length; i++ {
+		diff := candles[i].Close - candles[i-1].Close
+		gain = math.Max(diff, 0)
+		loss = math.Max(-diff, 0)
+
+		avgGain = ((avgGain * (p - 1)) + gain) / p
+		avgLoss = ((avgLoss * (p - 1)) + loss) / p
+
+		var (
+			rs  = avgGain / avgLoss
+			rsi = 100 - (100 / (1 + rs))
+		)
+		values = append(values, rsi)
+	}
+
+	return values
+}
 
 // RSIScreener creates a function that screens stocks based on their Relative Strength
 // Index (RSI) value. It calculates the 14-period RSI and applies a custom screening
@@ -18,7 +64,7 @@ import (
 func RSIScreener(
 	strategy string,
 	stock *models.Stock,
-	screen func(currentRSI float64) bool,
+	screen func(rsiValues []float64) bool,
 ) func() bool {
 	return func() bool {
 		const (
@@ -30,40 +76,19 @@ func RSIScreener(
 			return false
 		}
 
-		length := len(candles)
-		if length < Period+1 {
-			log.Printf("insufficient candles for RSI screener: %v\n", stock.Symbol)
+		var (
+			rsi       = computeRSI(candles, Period)
+			rsiLength = len(rsi)
+		)
+
+		if rsiLength == 0 {
+			log.Printf("insufficient candles for RSI: %v\n", stock.Symbol)
 			return false
 		}
 
-		var (
-			gain = 0.0
-			loss = 0.0
-		)
-		for i := 1; i <= Period; i++ {
-			diff := candles[i].Close - candles[i-1].Close
-			gain += math.Max(diff, 0)
-			loss += math.Max(-diff, 0)
-		}
-
-		// Initialize average gain and loss
-		avgGain := gain / Period
-		avgLoss := loss / Period
-
-		for i := Period + 1; i < length; i++ {
-			diff := candles[i].Close - candles[i-1].Close
-			gain = math.Max(diff, 0)
-			loss = math.Max(-diff, 0)
-
-			avgGain = ((avgGain * (Period - 1)) + gain) / Period
-			avgLoss = ((avgLoss * (Period - 1)) + loss) / Period
-		}
-
-		rs := avgGain / avgLoss
-		rsi := 100 - (100 / (1 + rs))
 		test := screen(rsi)
 		if !test {
-			log.Printf("[%v] %v failed RSI test\n", strategy, stock.Symbol)
+			log.Printf("%v failed %v RSI test\n", stock.Symbol, strategy)
 		}
 		return test
 	}

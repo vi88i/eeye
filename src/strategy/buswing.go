@@ -36,8 +36,13 @@ func bullishSwingWorker(strategyName string, in, out chan *models.Stock) {
 			steps.RSIScreener(
 				strategyName,
 				stock,
-				func(currentRSI float64) bool {
-					return currentRSI >= 40.0 && currentRSI <= 60.0
+				func(rsi []float64) bool {
+					var (
+						length = len(rsi)
+						v      = rsi[length-1]
+					)
+
+					return v >= 40.0 && v <= 60.0
 				},
 			),
 			steps.LowerBollingerBandFlatOrVShape(

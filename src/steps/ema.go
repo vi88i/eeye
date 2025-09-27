@@ -6,14 +6,13 @@ import (
 	"log"
 )
 
-func ema(candles []models.Candle, stock *models.Stock, period int) []float64 {
+func computeEMA(candles []models.Candle, period int) []float64 {
 	var (
 		empty  = utils.EmptySlice[float64]()
 		length = len(candles)
 	)
 
 	if length < period {
-		log.Printf("insufficient candles for EMA %v: %v", period, stock.Symbol)
 		return empty
 	}
 
@@ -59,7 +58,7 @@ func EMAFakeBreakdown(
 		}
 
 		var (
-			values       = ema(candles, stock, period)
+			values       = computeEMA(candles, period)
 			emaLength    = len(values)
 			candleLength = len(candles)
 		)
