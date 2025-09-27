@@ -21,6 +21,17 @@ cd eeye
 go mod download
 ```
 
+3. Set up environment variables:
+```bash
+# Copy the environment template
+cp .env.example .env
+
+# Edit .env and update only the GROWW_ACCESS_TOKEN
+# You'll need to set:
+# - GROWW_ACCESS_TOKEN: Your Groww API access token
+# All other variables are pre-configured with their default values
+```
+
 # Development Setup
 
 ## Database Setup
