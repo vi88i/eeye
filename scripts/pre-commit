@@ -1,0 +1,22 @@
+#!/bin/sh
+
+# Run go fmt on all files in src directory
+echo "Running go fmt..."
+go fmt ./src/...
+if [ $? -ne 0 ]; then
+    echo "go fmt failed"
+    exit 1
+fi
+
+# Stage the formatted files
+git add -u
+
+# Run golangci-lint
+echo "Running golangci-lint..."
+golangci-lint run
+if [ $? -ne 0 ]; then
+    echo "golangci-lint failed"
+    exit 1
+fi
+
+exit 0
