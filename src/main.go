@@ -6,34 +6,22 @@ package main
 import (
 	"eeye/src/api"
 	"eeye/src/config"
-	"eeye/src/constants"
 	"eeye/src/db"
+	"eeye/src/steps"
 	"eeye/src/strategy"
-	"eeye/src/utils"
-	"flag"
 	"os"
 	"os/signal"
-	"path/filepath"
 	"syscall"
 )
 
 func main() {
-	var (
-		stocksYamlPathPtr = flag.String(
-			"stocks",
-			constants.StocksYamlPath,
-			"yaml file with list of stocks. Eg: examples/stocks.yaml",
-		)
-	)
-
-	flag.Parse()
-
-	stocks := utils.GetStocksFromYaml(filepath.Clean(*stocksYamlPathPtr))
 	config.Load()
-	api.InitTradingClient()
+	api.InitGrowwTradingClient()
+	api.InitNSEClient()
 	db.Connect()
 
 	go func() {
+		stocks := steps.GetStocks()
 		strategy.Executor(stocks)
 	}()
 

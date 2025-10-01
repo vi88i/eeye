@@ -24,7 +24,7 @@ func GetCandles(stock *models.Stock, startTime string, endTime string) ([]models
 		return empty, nil
 	}
 
-	resp, err := Client.
+	resp, err := GrowwClient.
 		R().
 		SetQueryParam("exchange", stock.Exchange).
 		SetQueryParam("segment", stock.Segment).

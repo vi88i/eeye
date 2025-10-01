@@ -130,3 +130,40 @@ func FetchAllCandles(stock *models.Stock) ([]models.Candle, error) {
 
 	return res, nil
 }
+
+// FetchAllStocks returns distinct stocks from the DB
+func FetchAllStocks() ([]models.Stock, error) {
+	log.Println("fetching all distinct stocks from DB")
+	ctx := context.Background()
+
+	rows, err := Pool.Query(ctx, `
+		SELECT DISTINCT(symbol)
+		FROM stock_prices
+		ORDER BY symbol ASC
+	`)
+
+	var (
+		empty = utils.EmptySlice[models.Stock]()
+		res   = make([]models.Stock, 0, 2000)
+	)
+
+	if err != nil {
+		return empty, fmt.Errorf("query failed: %w", err)
+	}
+	defer rows.Close()
+
+	for rows.Next() {
+		stock := models.Stock{Segment: "CASH", Exchange: "NSE"}
+
+		err := rows.Scan(&stock.Symbol)
+
+		if err != nil {
+			return empty, fmt.Errorf("scanning failed: %w", err)
+		}
+		stock.Name = stock.Symbol
+
+		res = append(res, stock)
+	}
+
+	return res, nil
+}

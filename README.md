@@ -7,15 +7,10 @@
 
 ## Features
 
+- Fetching all available stocks from NSE
 - Integration with Groww API for real-time stock data
 - Multiple technical analysis strategies (e.g., Bollinger Bands, EMA, RSI)
 - Modular design for easy addition of new strategies
-
-## Workflow
-
-- Add the stock to be screened in `examples/stocks.yml` (future enhancement: automate syncing of stocks data)
-- Run the application using `go run src/main.go`
-- View the results in the console output
 
 ## How it works?
 

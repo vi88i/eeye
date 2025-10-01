@@ -50,6 +50,12 @@ var StepsConfig = struct {
 	Concurrency int
 }{constants.MinConcurrency}
 
+// NSEConfig holds configuration for NSE Bhavcopy downloads
+var NSEConfig = struct {
+	// BaseURL is the base URL for NSE Bhavcopy downloads
+	BaseURL string
+}{}
+
 // Load reads configuration from environment variables and initializes
 // the application's configuration structures. It will panic if required
 // environment variables are missing or invalid.
@@ -92,4 +98,6 @@ func Load() {
 	} else {
 		log.Println("invalid GROWW_RATE_LIMIT_PER_SECOND")
 	}
+
+	NSEConfig.BaseURL = os.Getenv("NSE_BHAVCOPY_BASE_URL")
 }

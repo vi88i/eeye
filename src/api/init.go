@@ -5,22 +5,36 @@ package api
 
 import (
 	"eeye/src/config"
+	"eeye/src/constants"
 	"fmt"
 
 	"github.com/go-resty/resty/v2"
 )
 
-// Client is the shared HTTP client for making API requests.
+// GrowwClient is the shared HTTP client for making API requests.
 // It is configured with the necessary headers and base URL for the trading API.
-var Client *resty.Client
+var GrowwClient *resty.Client
 
-// InitTradingClient initializes the global HTTP client with proper configuration
+// NseClient is the shared HTTP client for making requests to the NSE API.
+var NseClient *resty.Client
+
+// InitNSEClient initializes the global HTTP client with proper configuration
+// for making requests to the NSE API. This includes setting up headers
+// and base URL.
+func InitNSEClient() {
+	NseClient = resty.New()
+	NseClient.SetHeader("User-Agent", constants.ReqNSEUserAgent)
+	NseClient.SetHeader("Accept", "application/json")
+	NseClient.SetBaseURL(config.NSEConfig.BaseURL)
+}
+
+// InitGrowwTradingClient initializes the global HTTP client with proper configuration
 // for making requests to the trading API. This includes setting up authentication,
 // API version headers, and base URL.
-func InitTradingClient() {
-	Client = resty.New()
-	Client.SetHeader("Authorization", "Bearer "+config.TradingAPIConfig.AccessToken)
-	Client.SetHeader("X-API-VERSION", config.TradingAPIConfig.XAPIVersion)
-	Client.SetHeader("Accept", "application/json")
-	Client.SetBaseURL(fmt.Sprintf("%v/%v", config.TradingAPIConfig.BaseURL, config.TradingAPIConfig.APIVersion))
+func InitGrowwTradingClient() {
+	GrowwClient = resty.New()
+	GrowwClient.SetHeader("Authorization", "Bearer "+config.TradingAPIConfig.AccessToken)
+	GrowwClient.SetHeader("X-API-VERSION", config.TradingAPIConfig.XAPIVersion)
+	GrowwClient.SetHeader("Accept", "application/json")
+	GrowwClient.SetBaseURL(fmt.Sprintf("%v/%v", config.TradingAPIConfig.BaseURL, config.TradingAPIConfig.APIVersion))
 }
