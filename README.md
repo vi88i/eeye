@@ -27,25 +27,19 @@
 
 ## Installing Dependencies
 
-1. Clone the repository:
+1. Run the setup script:
 ```bash
-git clone https://github.com/vi88i/eeye.git
-cd eeye
+# On Unix/Linux/MacOS
+chmod +x scripts/setup-env.sh
+./scripts/setup-env.sh
+
+# On Windows (Git Bash or similar)
+sh scripts/setup-env.sh
 ```
 
-2. Install Go dependencies:
+2. Configure your Groww API token:
 ```bash
-go mod download
-```
-
-3. Set up environment variables:
-```bash
-# Copy the environment template
-cp .env.example .env
-
-# Edit .env and update only the GROWW_ACCESS_TOKEN
-# You'll need to set:
-# - GROWW_ACCESS_TOKEN: Your Groww API access token
+# Edit .env and set your GROWW_ACCESS_TOKEN
 # All other variables are pre-configured with their default values
 ```
 
