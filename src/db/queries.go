@@ -137,9 +137,10 @@ func FetchAllStocks() ([]models.Stock, error) {
 	ctx := context.Background()
 
 	rows, err := Pool.Query(ctx, `
-		SELECT DISTINCT(symbol)
+		SELECT symbol
 		FROM stock_prices
-		ORDER BY symbol ASC
+		GROUP BY symbol
+		ORDER BY symbol ASC;
 	`)
 
 	var (
