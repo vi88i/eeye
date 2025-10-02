@@ -52,9 +52,10 @@ func spawnStrategyWorkers(strategies []models.Strategy) (chan *models.Stock, cha
 			}()
 		}
 
-		// ideally it is not a good practice to send WaitGroup outside of the function
-		// since the done channel is only used for signaling, we can safely close it here
-		// without worrying about sending values to it
+		// What is the purpose of done?
+		// It is mainly used as a signalling channel (or to block code until certain condition)
+		// Here we use close(done) to indicate that all strategy workers have shutdown,
+		// and we can close all the sinks
 		wg.Wait()
 		close(done)
 	}()
