@@ -3,44 +3,38 @@ package strategy
 import (
 	"eeye/src/models"
 	"eeye/src/steps"
-	"log"
 )
 
-func llbBullishWorker(strategyName string, in, out chan *models.Stock) {
-	for stock := range in {
-		if err := steps.Ingestor(stock); err != nil {
-			log.Printf("ingestion failed for %v: %v\n", stock.Symbol, err)
-			continue
-		}
-
-		if err := steps.Extractor(stock); err != nil {
-			log.Printf("historical data extraction failed for %v: %v", stock.Symbol, err)
-			continue
-		}
-
-		screeners := []func() bool{
-			steps.BullishCandleScreener(
-				strategyName,
-				stock,
-			),
-			steps.LowerBollingerBandFlatOrVShape(
-				strategyName,
-				stock,
-			),
-		}
-
-		if steps.Executor(screeners) {
-			out <- stock
-		}
-
-		steps.PurgeCache(stock)
-	}
+// LowerBollingerBandBullish strategy which checks if lower bollinger band,
+// does a 'V' shape or have a positive slope
+type LowerBollingerBandBullish struct {
+	models.StrategyBaseImpl
 }
 
-func lowerBollingerBandBullish(stocks []models.Stock) string {
-	return steps.Worker(
-		"Lower Bollinger Band Bullish",
-		stocks,
-		llbBullishWorker,
+//nolint:revive
+func (l *LowerBollingerBandBullish) Name() string {
+	return "Lower Bollinger Band Bullish"
+}
+
+//nolint:revive
+func (l *LowerBollingerBandBullish) Execute(stock *models.Stock) {
+	var (
+		strategyName = l.Name()
+		sink         = l.GetSink()
 	)
+
+	screeners := []func() bool{
+		steps.BullishCandleScreener(
+			strategyName,
+			stock,
+		),
+		steps.LowerBollingerBandFlatOrVShape(
+			strategyName,
+			stock,
+		),
+	}
+
+	if steps.Screen(screeners) {
+		sink <- stock
+	}
 }

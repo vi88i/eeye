@@ -18,37 +18,40 @@ import (
 var TradingAPIConfig = struct {
 	// AccessToken is the API authentication token
 	AccessToken string
+
 	// BaseURL is the root URL for API requests
 	BaseURL string
+
 	// APIVersion specifies the API version to use
 	APIVersion string
+
 	// XAPIVersion is the custom API version header value
 	XAPIVersion string
-	// RateLimit defines the maximum API requests per second
-	RateLimit int
-}{RateLimit: constants.MinRequestPerSecond}
+
+	// RequestPerSecond defines the maximum API requests per second
+	RequestPerSecond int
+}{RequestPerSecond: constants.MinRequestPerSecond}
 
 // DBConfig holds the PostgreSQL database connection configuration.
 var DBConfig = struct {
 	// Host is the database server hostname
 	Host string
+
 	// Port is the database server port
 	Port string
+
 	// User is the database username
 	User string
+
 	// Password is the database user password
 	Password string
+
 	// Name is the database name to connect to
 	Name string
+
 	// Tz is the timezone for database connections
 	Tz string
 }{}
-
-// StepsConfig holds configuration for the trading strategy steps execution.
-var StepsConfig = struct {
-	// Concurrency defines how many workers to run in parallel
-	Concurrency int
-}{constants.MinConcurrency}
 
 // NSEConfig holds configuration for NSE Bhavcopy downloads
 var NSEConfig = struct {
@@ -77,26 +80,15 @@ func Load() {
 	DBConfig.Name = os.Getenv("EEYE_DB_NAME")
 	DBConfig.Tz = os.Getenv("EEYE_TZ")
 
-	concurrency, err := strconv.Atoi(os.Getenv("EEYE_CONCURRENCY"))
+	requestPerSecond, err := strconv.Atoi(os.Getenv("GROWW_RPS"))
 	if err == nil {
-		StepsConfig.Concurrency = utils.Clamp[int, int](
-			concurrency,
-			constants.MinConcurrency,
-			constants.MaxConcurrency,
-		)
-	} else {
-		log.Println("invalid EEYE_CONCURRENCY")
-	}
-
-	rateLimit, err := strconv.Atoi(os.Getenv("GROWW_RATE_LIMIT_PER_SECOND"))
-	if err == nil {
-		TradingAPIConfig.RateLimit = utils.Clamp[int, int](
-			rateLimit,
+		TradingAPIConfig.RequestPerSecond = utils.Clamp[int, int](
+			requestPerSecond,
 			constants.MinRequestPerSecond,
 			constants.MaxRequestPerSecond,
 		)
 	} else {
-		log.Println("invalid GROWW_RATE_LIMIT_PER_SECOND")
+		log.Println("invalid GROWW_RPS defaulting to", constants.MaxRequestPerSecond)
 	}
 
 	NSEConfig.BaseURL = os.Getenv("NSE_BHAVCOPY_BASE_URL")

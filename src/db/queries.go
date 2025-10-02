@@ -140,7 +140,7 @@ func FetchAllStocks() ([]models.Stock, error) {
 		SELECT symbol
 		FROM stock_prices
 		GROUP BY symbol
-		ORDER BY symbol ASC;
+		ORDER BY symbol ASC
 	`)
 
 	var (

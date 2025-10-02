@@ -6,63 +6,56 @@ package strategy
 import (
 	"eeye/src/models"
 	"eeye/src/steps"
-	"log"
 )
 
-func bullishSwingWorker(strategyName string, in, out chan *models.Stock) {
-	for stock := range in {
-		if err := steps.Ingestor(stock); err != nil {
-			log.Printf("ingestion failed for %v: %v\n", stock.Symbol, err)
-			continue
-		}
-
-		if err := steps.Extractor(stock); err != nil {
-			log.Printf("historical data extraction failed for %v: %v", stock.Symbol, err)
-			continue
-		}
-
-		screeners := []func() bool{
-			steps.BullishCandleScreener(
-				strategyName,
-				stock,
-			),
-			steps.VolumeScreener(
-				strategyName,
-				stock,
-				func(currentVolume float64, averageVolume float64) bool {
-					return currentVolume >= averageVolume
-				},
-			),
-			steps.RSIScreener(
-				strategyName,
-				stock,
-				func(rsi []float64) bool {
-					var (
-						length = len(rsi)
-						v      = rsi[length-1]
-					)
-
-					return v >= 40.0 && v <= 60.0
-				},
-			),
-			steps.LowerBollingerBandFlatOrVShape(
-				strategyName,
-				stock,
-			),
-		}
-
-		if steps.Executor(screeners) {
-			out <- stock
-		}
-
-		steps.PurgeCache(stock)
-	}
+// BullishSwing strategy
+type BullishSwing struct {
+	models.StrategyBaseImpl
 }
 
-func bullishSwing(stocks []models.Stock) string {
-	return steps.Worker(
-		"Bullish Swing",
-		stocks,
-		bullishSwingWorker,
+//nolint:revive
+func (b *BullishSwing) Name() string {
+	return "Bullish Swing"
+}
+
+//nolint:revive
+func (b *BullishSwing) Execute(stock *models.Stock) {
+	var (
+		strategyName = b.Name()
+		sink         = b.GetSink()
 	)
+
+	screeners := []func() bool{
+		steps.BullishCandleScreener(
+			strategyName,
+			stock,
+		),
+		steps.VolumeScreener(
+			strategyName,
+			stock,
+			func(currentVolume float64, averageVolume float64) bool {
+				return currentVolume >= averageVolume
+			},
+		),
+		steps.RSIScreener(
+			strategyName,
+			stock,
+			func(rsi []float64) bool {
+				var (
+					length = len(rsi)
+					v      = rsi[length-1]
+				)
+
+				return v >= 40.0 && v <= 60.0
+			},
+		),
+		steps.LowerBollingerBandFlatOrVShape(
+			strategyName,
+			stock,
+		),
+	}
+
+	if steps.Screen(screeners) {
+		sink <- stock
+	}
 }

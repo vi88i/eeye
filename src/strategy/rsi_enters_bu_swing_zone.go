@@ -6,53 +6,66 @@ import (
 	"log"
 )
 
-func rsiEntersBullishSwingZoneWorker(strategyName string, in, out chan *models.Stock) {
-	for stock := range in {
-		if err := steps.Ingestor(stock); err != nil {
-			log.Printf("ingestion failed for %v: %v\n", stock.Symbol, err)
-			continue
-		}
+// RSIEntersBullishSwingZone strategy which detects stocks whose price moved,
+// from below baseLine to above baseLine but bounded by upperBound
+type RSIEntersBullishSwingZone struct {
+	models.StrategyBaseImpl
 
-		if err := steps.Extractor(stock); err != nil {
-			log.Printf("historical data extraction failed for %v: %v", stock.Symbol, err)
-			continue
-		}
-
-		screeners := []func() bool{
-			steps.BullishCandleScreener(
-				strategyName,
-				stock,
-			),
-			steps.RSIScreener(
-				strategyName,
-				stock,
-				func(rsi []float64) bool {
-					length := len(rsi)
-					if length < 2 {
-						return false
-					}
-
-					var (
-						cur  = rsi[length-1]
-						prev = rsi[length-2]
-					)
-					return cur >= 40.0 && prev <= 40.0
-				},
-			),
-		}
-
-		if steps.Executor(screeners) {
-			out <- stock
-		}
-
-		steps.PurgeCache(stock)
-	}
+	baseLine   float64
+	upperBound float64
 }
 
-func rsiEntersBullishSwingZone(stocks []models.Stock) string {
-	return steps.Worker(
-		"Bullish Swing Zone RSI",
-		stocks,
-		rsiEntersBullishSwingZoneWorker,
+//nolint:revive
+func (r *RSIEntersBullishSwingZone) Name() string {
+	return "RSI Enters Bullish Swing Zone"
+}
+
+//nolint:revive
+func (r *RSIEntersBullishSwingZone) Execute(stock *models.Stock) {
+	var (
+		strategyName = r.Name()
+		sink         = r.GetSink()
 	)
+
+	if r.baseLine == 0 {
+		log.Println("baseLine cannot be zero")
+		return
+	}
+
+	if r.upperBound == 0 {
+		log.Println("upperBound cannot be zero")
+		return
+	}
+
+	if r.baseLine > r.upperBound {
+		log.Println("baseLine > upperBound")
+		return
+	}
+
+	screeners := []func() bool{
+		steps.BullishCandleScreener(
+			strategyName,
+			stock,
+		),
+		steps.RSIScreener(
+			strategyName,
+			stock,
+			func(rsi []float64) bool {
+				length := len(rsi)
+				if length < 2 {
+					return false
+				}
+
+				var (
+					cur  = rsi[length-1]
+					prev = rsi[length-2]
+				)
+				return cur >= r.baseLine && prev <= r.baseLine && cur <= r.upperBound && cur > prev
+			},
+		),
+	}
+
+	if steps.Screen(screeners) {
+		sink <- stock
+	}
 }

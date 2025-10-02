@@ -7,7 +7,6 @@ import (
 	"eeye/src/api"
 	"eeye/src/config"
 	"eeye/src/db"
-	"eeye/src/steps"
 	"eeye/src/strategy"
 	"os"
 	"os/signal"
@@ -20,14 +19,15 @@ func main() {
 	api.InitNSEClient()
 	db.Connect()
 
-	go func() {
-		stocks := steps.GetStocks()
-		strategy.Executor(stocks)
-	}()
+	done := strategy.Analyze()
 
 	quit := make(chan os.Signal, 1)
 	signal.Notify(quit, os.Interrupt, syscall.SIGTERM)
 
-	<-quit
+	select {
+	case <-quit:
+	case <-done:
+	}
+
 	db.Disconnect()
 }

@@ -49,10 +49,12 @@ func fetchDistinctStocksFromDB() ([]models.Stock, error) {
 // fallbacks to distinct stock symbols in the database
 func GetStocks() []models.Stock {
 	if stocks, err := fetchLatestStocksFromNSE(); err == nil {
+		Ingestor(stocks)
 		return stocks
 	}
 
 	if stocks, err := fetchDistinctStocksFromDB(); err == nil {
+		Ingestor(stocks)
 		return stocks
 	}
 
