@@ -8,6 +8,7 @@ import (
 	"log"
 	"strings"
 	"sync"
+	"time"
 )
 
 // executor processes stocks from the source channel, applies all strategies,
@@ -15,7 +16,7 @@ import (
 func executor(strategies []models.Strategy, source <-chan *models.Stock) {
 	for stock := range source {
 		if err := steps.Extractor(stock); err != nil {
-			log.Printf("historical data extraction failed for %v: %v", stock.Symbol, err)
+			log.Printf("historical data extraction failed for %v: %v\n", stock.Symbol, err)
 			continue
 		}
 
@@ -55,7 +56,10 @@ func spawnStrategyWorkers(strategies []models.Strategy) (chan *models.Stock, cha
 		// What is the purpose of done?
 		// It is mainly used as a signalling channel (or to block code until certain condition)
 		// Here we use close(done) to indicate that all strategy workers have shutdown,
-		// and we can close all the sinks
+		// and we can close all the sinks to initiate aggregator goroutine shutdown.
+		//
+		// Why we can't return WaitGroup?
+		// It is a bad practice to return WaitGroup, use channel for goroutine comms.
 		wg.Wait()
 		close(done)
 	}()
@@ -76,57 +80,67 @@ func feeder(stocks []models.Stock, source chan<- *models.Stock) {
 // aggregator collects results from all strategies and logs them once processing is complete.
 func aggregator(strategies []models.Strategy, done <-chan any) {
 	var (
-		agg = make(map[models.Strategy][]*models.Stock)
 		wg  = sync.WaitGroup{}
+		agg = make(chan *models.StrategyResult, len(strategies))
 	)
 
 	for i := range strategies {
-		agg[strategies[i]] = make([]*models.Stock, 0, constants.StrategyWorkerOutputBufferSize)
 		wg.Add(1)
 		go func() {
 			defer wg.Done()
+			res := make([]*models.Stock, 0, constants.StrategyWorkerOutputBufferSize)
 			for stock := range strategies[i].GetSink() {
-				agg[strategies[i]] = append(agg[strategies[i]], stock)
+				res = append(res, stock)
 			}
+			agg <- &models.StrategyResult{Strategy: strategies[i], Stocks: res}
 		}()
 	}
 
-	// Wait for strategy workers to finish
-	<-done
+	go func() {
+		// Wait for strategy workers to finish
+		<-done
 
-	// Since all workers have stopped, we can safely close all strategy sinks
-	// to initiate the shutdown of aggregator goroutines
-	for i := range strategies {
-		close(strategies[i].GetSink())
-	}
+		// Since all strategy workers have stopped, we can safely close all strategy sinks
+		// to initiate the shutdown of aggregator goroutines
+		for i := range strategies {
+			close(strategies[i].GetSink())
+		}
+	}()
 
-	// Even though all strategy workers have finished,
-	// there could still be data in the sinks that need to be read (we've used buffered channels for sinks).
-	wg.Wait()
+	go func() {
+		// Wait for all aggregator routines to shutdown, post which
+		// we can close the agg channel
+		wg.Wait()
+
+		close(agg)
+	}()
 
 	log.Println("================= Strategy Results =================")
-	for strategy, stocks := range agg {
-		strategyName := strategy.Name()
+	for result := range agg {
+		strategyName := result.Strategy.Name()
 		symbols := utils.EmptySlice[string]()
 
-		for i := range stocks {
-			symbols = append(symbols, stocks[i].Symbol)
+		for i := range result.Stocks {
+			symbols = append(symbols, result.Stocks[i].Symbol)
 		}
 
 		if len(symbols) > 0 {
 			log.Printf("%v result: \n%v\n", strategyName, strings.Join(symbols, "\n"))
 		} else {
-			log.Printf("No stocks satisfy %v", strategyName)
+			log.Printf("No stocks satisfy %v\n", strategyName)
 		}
 	}
 }
 
 // Analyze runs all trading strategies on the given list of stocks.
 // It executes multiple strategies in parallel and logs their results.
-func Analyze() chan any {
-	isAnalysisDone := make(chan any)
+func Analyze() <-chan any {
+	done := make(chan any)
 
 	go func() {
+		defer close(done)
+
+		start := time.Now()
 		stocks := steps.GetStocks()
 
 		strategies := []models.Strategy{
@@ -136,12 +150,11 @@ func Analyze() chan any {
 			&RSIEntersBullishSwingZone{baseLine: 40, upperBound: 60},
 		}
 
-		source, done := spawnStrategyWorkers(strategies)
+		source, isWorkDone := spawnStrategyWorkers(strategies)
 		feeder(stocks, source)
-		aggregator(strategies, done)
-
-		close(isAnalysisDone)
+		aggregator(strategies, isWorkDone)
+		log.Printf("time taken to complete analysis %s\n", time.Since(start))
 	}()
 
-	return isAnalysisDone
+	return done
 }

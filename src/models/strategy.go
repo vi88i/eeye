@@ -37,3 +37,12 @@ func (s *StrategyBaseImpl) GetSink() chan *Stock {
 
 	return s.sink
 }
+
+// StrategyResult combines the strategy and the the result satisfying the strategy
+type StrategyResult struct {
+	// Strategy config
+	Strategy Strategy
+
+	// Stocks is list of stocks satisfying the strategy
+	Stocks []*Stock
+}

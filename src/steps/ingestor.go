@@ -55,11 +55,45 @@ func ingestionWorker(in <-chan *models.Stock) {
 // Ingestor updates the historical price data for a stock by fetching new candles
 // from the API and storing them in the database. It only fetches data newer than
 // the most recent candle in the database to avoid duplicates and minimize API calls.
-func Ingestor(stocks []models.Stock) {
+func Ingestor(stocks []models.Stock, lastTradingDay string) {
+	currentStocks, err := db.FetchAllStocks()
+	if err != nil {
+		log.Fatal(err)
+	}
+
 	var (
-		in = make(chan *models.Stock, constants.IngestionBufferSize)
-		wg = sync.WaitGroup{}
+		in                    = make(chan *models.Stock, constants.IngestionBufferSize)
+		wg                    = sync.WaitGroup{}
+		currentStocksSet      = map[string]bool{}
+		fetchedStocksSet      = map[string]bool{}
+		stocksNeedingBackfill = make([]*models.Stock, 0)
 	)
+
+	for i := range currentStocks {
+		currentStocksSet[currentStocks[i].Symbol] = true
+	}
+
+	for i := range stocks {
+		fetchedStocksSet[stocks[i].Symbol] = true
+	}
+
+	// find newly listed stocks
+	for i := range stocks {
+		_, ok := currentStocksSet[stocks[i].Symbol]
+		if !ok {
+			stocksNeedingBackfill = append(stocksNeedingBackfill, &stocks[i])
+		}
+	}
+
+	// from db get those stocks whose needs backfilling
+	outOfSyncStocks, err := db.FetchOutOfSyncStock(lastTradingDay)
+	if err != nil {
+		log.Fatal(err)
+	}
+
+	for i := range outOfSyncStocks {
+		stocksNeedingBackfill = append(stocksNeedingBackfill, &outOfSyncStocks[i])
+	}
 
 	for range constants.NumOfIngestionWorkers {
 		wg.Add(1)
@@ -69,9 +103,12 @@ func Ingestor(stocks []models.Stock) {
 		}()
 	}
 
+	log.Printf("%v stocks need backfilling\n", len(stocksNeedingBackfill))
 	start := time.Now()
-	for i := range stocks {
-		in <- &stocks[i]
+	for i := range stocksNeedingBackfill {
+		in <- stocksNeedingBackfill[i]
+
+		// Make parallel calls and then sleep for the remaining time left in the second
 		if (i+1)%config.TradingAPIConfig.RequestPerSecond == 0 {
 			elapsed := time.Since(start)
 

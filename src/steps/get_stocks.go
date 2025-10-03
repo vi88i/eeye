@@ -2,19 +2,19 @@ package steps
 
 import (
 	"eeye/src/api"
-	"eeye/src/db"
 	"eeye/src/models"
 	"eeye/src/utils"
 	"log"
 	"strings"
+	"time"
 )
 
 // Fetch latest available stocks from NSE
-func fetchLatestStocksFromNSE() ([]models.Stock, error) {
-	stocks, err := api.DownloadLatestBhavcopy()
+func fetchLatestStocksFromNSE() ([]models.Stock, string, error) {
+	stocks, lastTradingDay, err := api.DownloadLatestBhavcopy()
 	empty := utils.EmptySlice[models.Stock]()
 	if err != nil {
-		return empty, err
+		return empty, "", err
 	}
 
 	filtered := make([]models.Stock, 0, len(stocks))
@@ -29,35 +29,19 @@ func fetchLatestStocksFromNSE() ([]models.Stock, error) {
 		}
 	}
 
-	log.Printf("Fetched %d stocks from NSE\n", len(filtered))
-	return filtered, nil
-}
-
-// Fetch distinct stock symbols from the DB
-func fetchDistinctStocksFromDB() ([]models.Stock, error) {
-	stocks, err := db.FetchAllStocks()
-	empty := utils.EmptySlice[models.Stock]()
-	if err != nil {
-		return empty, err
-	}
-
-	log.Printf("Fetched %d stocks from DB\n", len(stocks))
-	return stocks, nil
+	log.Printf("fetched %d stocks from NSE\n", len(filtered))
+	return filtered, lastTradingDay, nil
 }
 
 // GetStocks retrieves the list of available stocks from an external source or
 // fallbacks to distinct stock symbols in the database
 func GetStocks() []models.Stock {
-	if stocks, err := fetchLatestStocksFromNSE(); err == nil {
-		Ingestor(stocks)
-		return stocks
+	stocks, lastTradingDay, err := fetchLatestStocksFromNSE()
+	if err != nil {
+		log.Fatal(err)
 	}
 
-	if stocks, err := fetchDistinctStocksFromDB(); err == nil {
-		Ingestor(stocks)
-		return stocks
-	}
-
-	log.Fatal("Failed to fetch stocks")
-	return utils.EmptySlice[models.Stock]()
+	Ingestor(stocks, lastTradingDay)
+	time.Sleep(time.Second * 2)
+	return stocks
 }

@@ -166,5 +166,82 @@ func FetchAllStocks() ([]models.Stock, error) {
 		res = append(res, stock)
 	}
 
+	log.Printf("fetched %v distinct stock from DB\n", len(res))
 	return res, nil
+}
+
+// FetchOutOfSyncStock fetches stocks that are not synced with latest market data
+func FetchOutOfSyncStock(lastTradingDay string) ([]models.Stock, error) {
+	log.Println("fetching out of sync stocks")
+	ctx := context.Background()
+
+	query := fmt.Sprintf(`
+		SELECT symbol
+		FROM stock_prices
+		GROUP BY symbol
+		HAVING MAX(timestamp) <> TIMESTAMPTZ '%v'
+		ORDER BY symbol ASC
+	`, fmt.Sprintf("%v 00:00:00 %v", lastTradingDay, config.DBConfig.Tz))
+	rows, err := Pool.Query(ctx, query)
+
+	var (
+		empty = utils.EmptySlice[models.Stock]()
+		res   = make([]models.Stock, 0, 2000)
+	)
+
+	if err != nil {
+		return empty, fmt.Errorf("query failed: %w", err)
+	}
+	defer rows.Close()
+
+	for rows.Next() {
+		stock := models.Stock{Segment: "CASH", Exchange: "NSE"}
+
+		err := rows.Scan(&stock.Symbol)
+
+		if err != nil {
+			return empty, fmt.Errorf("scanning failed: %w", err)
+		}
+		stock.Name = stock.Symbol
+
+		res = append(res, stock)
+	}
+
+	return res, nil
+}
+
+// DeleteDelistedStocks deletes the stock data which is no longer listed on NSE
+// Only to be executed on successful completion of the analysis
+func DeleteDelistedStocks() {
+	log.Println("finding delisted stocks for deletion")
+	ctx := context.Background()
+
+	rows, err := Pool.Query(ctx, `
+		WITH
+			ts_info AS (
+				SELECT MAX(timestamp) AS ts
+				FROM stock_prices
+			),
+			delisted AS (
+				SELECT symbol
+				FROM stock_prices
+				GROUP BY symbol
+				HAVING MAX(timestamp) <> (
+					SELECT ts
+					FROM ts_info
+				)
+			)
+		DELETE FROM stock_prices
+		WHERE symbol IN (
+			SELECT symbol
+			FROM delisted
+		)
+	`)
+	if err != nil {
+		log.Printf("deletion of delisted stocks failed: %v\n", err)
+		return
+	}
+	defer rows.Close()
+
+	log.Printf("deletion of delisted stocks done")
 }

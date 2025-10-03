@@ -64,7 +64,7 @@ func EMAFakeBreakdown(
 		)
 
 		if emaLength < MinEMAPoints {
-			log.Printf("insufficient candles for %v screener: %v", strategyName, stock.Symbol)
+			log.Printf("insufficient candles for %v screener: %v\n", strategyName, stock.Symbol)
 			return false
 		}
 

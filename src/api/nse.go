@@ -58,7 +58,7 @@ func getMarketCapData(zipFileName, marketCapDataFileName string) ([]models.NSESt
 // DownloadLatestBhavcopy attempts to download the latest NSE Bhavcopy zip file
 // and extract the market capitalization data CSV. It tries up to 10 previous days
 // if the latest file is not available (e.g., weekends, holidays).
-func DownloadLatestBhavcopy() ([]models.NSEStockData, error) {
+func DownloadLatestBhavcopy() ([]models.NSEStockData, string, error) {
 	const (
 		PadFmt = "%02d"
 		Probes = 10
@@ -76,17 +76,18 @@ func DownloadLatestBhavcopy() ([]models.NSEStockData, error) {
 			day                   = fmt.Sprintf(PadFmt, now.Day())
 			zipFileName           = fmt.Sprintf("PR%v%v%v.zip", day, month, year)
 			marketCapDataFileName = fmt.Sprintf("MCAP%v%v%v.csv", day, month, now.Year())
+			lastTradingDay        = fmt.Sprintf("%v-%v-%v", now.Year(), month, day)
 		)
 
 		stocks, err := getMarketCapData(zipFileName, marketCapDataFileName)
 		if err == nil && len(stocks) > 0 {
-			return stocks, nil
+			return stocks, lastTradingDay, nil
 		}
 
-		log.Printf("DownloadLatestBhavcopy: %v", err)
+		log.Printf("DownloadLatestBhavcopy: %v\n", err)
 		now = now.AddDate(0, 0, -1)
 		i++
 	}
 
-	return empty, fmt.Errorf("DownloadLatestBhavcopy: no valid data found")
+	return empty, "", fmt.Errorf("DownloadLatestBhavcopy: no valid data found")
 }

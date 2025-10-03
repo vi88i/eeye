@@ -50,7 +50,7 @@ func PurgeCache(stock *models.Stock) {
 
 	_, ok := cache[stock]
 	if ok {
-		log.Printf("purged %v", stock.Symbol)
+		log.Printf("purged %v\n", stock.Symbol)
 		delete(cache, stock)
 	}
 }

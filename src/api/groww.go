@@ -1,6 +1,7 @@
 package api
 
 import (
+	"eeye/src/config"
 	"eeye/src/constants"
 	"eeye/src/models"
 	"eeye/src/utils"
@@ -18,6 +19,11 @@ func GetCandles(stock *models.Stock, startTime string, endTime string) ([]models
 		body  = models.CandlesResponse{}
 		empty = utils.EmptySlice[models.Candle]()
 	)
+
+	loc, err := time.LoadLocation(config.DBConfig.Tz)
+	if err != nil {
+		return empty, fmt.Errorf("unable to load location: %w", err)
+	}
 
 	if startTime >= endTime {
 		log.Printf("start time and end time are the same for %v, returning empty slice\n", stock.Symbol)
@@ -50,9 +56,19 @@ func GetCandles(stock *models.Stock, startTime string, endTime string) ([]models
 	candles := make([]models.Candle, 0, len(body.Payload.Candles))
 	for i := range body.Payload.Candles {
 		c := &body.Payload.Candles[i]
+
+		ts := time.Unix(int64(c[constants.CandleTimestampIndex].(float64)), 0)
+		startOfDay := time.Date(
+			ts.In(loc).Year(),
+			ts.In(loc).Month(),
+			ts.In(loc).Day(),
+			0, 0, 0, 0,
+			loc,
+		)
+
 		candle := models.Candle{
 			Symbol:    stock.Symbol,
-			Timestamp: time.Unix(int64(c[constants.CandleTimestampIndex].(float64)), 0),
+			Timestamp: startOfDay,
 			Open:      c[constants.CandleOpenIndex].(float64),
 			High:      c[constants.CandleHighIndex].(float64),
 			Low:       c[constants.CandleLowIndex].(float64),

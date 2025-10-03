@@ -27,6 +27,7 @@ func main() {
 	select {
 	case <-quit:
 	case <-done:
+		db.DeleteDelistedStocks()
 	}
 
 	db.Disconnect()
