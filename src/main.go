@@ -5,6 +5,7 @@ package main
 
 import (
 	"eeye/src/api"
+	"eeye/src/applog"
 	"eeye/src/config"
 	"eeye/src/db"
 	"eeye/src/strategy"
@@ -14,6 +15,7 @@ import (
 )
 
 func main() {
+	logFile := applog.Init()
 	config.Load()
 	api.InitGrowwTradingClient()
 	api.InitNSEClient()
@@ -31,4 +33,5 @@ func main() {
 	}
 
 	db.Disconnect()
+	var _ = logFile.Close()
 }
