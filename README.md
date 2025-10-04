@@ -88,3 +88,23 @@ sh scripts/install-hooks.sh
 ```
 
 The hooks will now run automatically before each commit. If there are any formatting issues or linting errors, the commit will be blocked until they are fixed.
+
+# Running the Application
+
+To start the application, use the provided start script:
+
+```bash
+# On Unix/Linux/MacOS
+chmod +x scripts/start.sh
+./scripts/start.sh
+
+# On Windows (Git Bash or similar)
+sh scripts/start.sh
+```
+
+The start script will:
+1. Check if the database container is running and start it if needed
+2. Determine the correct project paths
+3. Run the application with `go run`
+
+Note: Make sure you've completed the database setup and configuration steps before running the application.
