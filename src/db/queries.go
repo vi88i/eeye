@@ -145,7 +145,7 @@ func FetchAllStocks() ([]models.Stock, error) {
 
 	var (
 		empty = utils.EmptySlice[models.Stock]()
-		res   = make([]models.Stock, 0, 2000)
+		res   = make([]models.Stock, 0, constants.NumOfStocks)
 	)
 
 	if err != nil {
@@ -186,7 +186,7 @@ func FetchOutOfSyncStock(lastTradingDay string) ([]models.Stock, error) {
 
 	var (
 		empty = utils.EmptySlice[models.Stock]()
-		res   = make([]models.Stock, 0, 2000)
+		res   = make([]models.Stock, 0, constants.NumOfStocks)
 	)
 
 	if err != nil {

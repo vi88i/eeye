@@ -3,6 +3,7 @@ package api
 import (
 	"archive/zip"
 	"bytes"
+	"eeye/src/constants"
 	"eeye/src/models"
 	"eeye/src/utils"
 	"fmt"
@@ -43,7 +44,7 @@ func getMarketCapData(zipFileName, marketCapDataFileName string) ([]models.NSESt
 				_ = rc.Close()
 			}()
 
-			var stocks []models.NSEStockData
+			stocks := make([]models.NSEStockData, 0, constants.NumOfStocks)
 			if err := gocsv.Unmarshal(rc, &stocks); err != nil {
 				return empty, fmt.Errorf("getMarketCapData: %w", err)
 			}
