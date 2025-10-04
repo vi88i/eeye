@@ -64,17 +64,19 @@ func Ingestor(stocks []models.Stock, lastTradingDay string) {
 	var (
 		in                    = make(chan *models.Stock, constants.IngestionBufferSize)
 		wg                    = sync.WaitGroup{}
-		currentStocksSet      = map[string]bool{}
-		fetchedStocksSet      = map[string]bool{}
+		currentStocksSet      = make(map[string]struct{})
+		fetchedStocksSet      = make(map[string]struct{})
 		stocksNeedingBackfill = make([]*models.Stock, 0)
 	)
 
+	// Why struct{} for creating set?
+	// struct{} takes zero memory, using other types like bool requires memory
 	for i := range currentStocks {
-		currentStocksSet[currentStocks[i].Symbol] = true
+		currentStocksSet[currentStocks[i].Symbol] = struct{}{}
 	}
 
 	for i := range stocks {
-		fetchedStocksSet[stocks[i].Symbol] = true
+		fetchedStocksSet[stocks[i].Symbol] = struct{}{}
 	}
 
 	// find newly listed stocks
