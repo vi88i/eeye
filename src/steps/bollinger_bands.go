@@ -5,88 +5,66 @@ package steps
 
 import (
 	"eeye/src/models"
+	"eeye/src/store"
 	"log"
 	"math"
 )
 
-// LowerBollingerBandFlatOrVShape creates a function that screens for stocks showing
-// a flattening or V-shaped pattern in their lower Bollinger Band. This pattern
-// often indicates potential trend reversal points.
-//
-// The function uses a 20-period Bollinger Band with 2 standard deviations and
-// requires at least 22 data points for calculation.
-func LowerBollingerBandFlatOrVShape(
-	strategy string,
-	stock *models.Stock,
-) func() bool {
-	return func() bool {
-		const (
-			MinPoints     = 22
-			Period        = 20
-			K             = 2
-			FlatThreshold = 0.0001
-		)
+// BollingerBands creates a function to screen stocks based on their bollinger band values
+type BollingerBands struct {
+	Test func(candles []models.Candle, sma []float64, lbb []float64, ubb []float64) bool
+}
 
-		candles, err := getCachedCandles(stock)
-		if err != nil {
-			return false
-		}
+//revive:disable-next-line exported
+func (b *BollingerBands) Name() string {
+	return "Bollinger Bands screener"
+}
 
-		length := len(candles)
-		if length < MinPoints {
-			log.Printf(
-				"insufficient candles for %v lower bollinger band signal: %v\n",
-				strategy,
-				stock.Symbol,
-			)
-			return false
-		}
+//revive:disable-next-line exported
+func (b *BollingerBands) Screen(strategy string, stock *models.Stock) bool {
+	const (
+		MinPoints = 22
+		Period    = 20
+		K         = 2
+	)
 
-		sum := 0.0
-		sma := 0.0
-		lbb := make([]float64, 0, len(candles)-Period+1)
-		for i := range candles {
-			sum += candles[i].Close
-			if i+1 >= Period {
-				avg := sum / float64(Period)
-				sma = avg
-				variance := 0.0
-				for j := i + 1 - Period; j <= i; j++ {
-					diff := candles[j].Close - avg
-					variance = variance + diff*diff
-				}
-				stdDev := math.Sqrt(variance / float64(Period))
-				lbb = append(lbb, avg-K*stdDev)
-				sum -= candles[i+1-Period].Close
-			}
-		}
+	step := b.Name()
 
-		lastCandle := candles[length-1]
-		isBullishCandle := lastCandle.Open >= lastCandle.Close
-		hasCandleFullyCrossedSMA := (isBullishCandle && lastCandle.Open > sma) ||
-			(lastCandle.Close > sma)
-
-		if !hasCandleFullyCrossedSMA {
-			lbbLen := len(lbb)
-			var (
-				x1 = 0.0
-				y1 = lbb[lbbLen-3]
-				x2 = 1.0
-				y2 = lbb[lbbLen-2]
-				x3 = 2.0
-				y3 = lbb[lbbLen-1]
-			)
-
-			slope1 := (y2 - y1) / (x2 - x1)
-			slope2 := (y3 - y2) / (x3 - x2)
-
-			isFlat := math.Abs(slope1) < FlatThreshold && math.Abs(slope2) < FlatThreshold
-			isVShape := slope1 < 0 && slope2 > 0
-			if isFlat || isVShape {
-				return true
-			}
-		}
-
+	candles, err := store.Get(stock)
+	if err != nil {
 		return false
 	}
+
+	length := len(candles)
+	if length < MinPoints {
+		log.Printf("[%v - %v] insufficient candles: %v\n", strategy, step, stock.Symbol)
+		return false
+	}
+
+	sum := 0.0
+	lbb := make([]float64, 0, len(candles)-Period+1)
+	ubb := make([]float64, 0, len(candles)-Period+1)
+	sma := make([]float64, 0, len(candles)-Period+1)
+	for i := range candles {
+		sum += candles[i].Close
+		if i+1 >= Period {
+			avg := sum / float64(Period)
+			sma = append(sma, avg)
+			variance := 0.0
+			for j := i + 1 - Period; j <= i; j++ {
+				diff := candles[j].Close - avg
+				variance = variance + diff*diff
+			}
+			stdDev := math.Sqrt(variance / float64(Period))
+			lbb = append(lbb, avg-K*stdDev)
+			ubb = append(ubb, avg+K*stdDev)
+			sum -= candles[i+1-Period].Close
+		}
+	}
+
+	test := b.Test(candles, sma, lbb, ubb)
+	if !test {
+		log.Printf("[%v - %v] test failed: %v\n", strategy, step, stock.Symbol)
+	}
+	return test
 }

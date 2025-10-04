@@ -1,4 +1,5 @@
-package steps
+// Package store provides cache service
+package store
 
 import (
 	"eeye/src/db"
@@ -15,7 +16,8 @@ func init() {
 	cache = make(map[*models.Stock][]models.Candle)
 }
 
-func getCachedCandles(stock *models.Stock) ([]models.Candle, error) {
+// Get returns the candles of the given stock
+func Get(stock *models.Stock) ([]models.Candle, error) {
 	mu.RLock()
 	defer mu.RUnlock()
 
@@ -27,10 +29,10 @@ func getCachedCandles(stock *models.Stock) ([]models.Candle, error) {
 	return value, nil
 }
 
-// Extractor retrieves historical price data for a stock from the database and
+// Add retrieves candlestick data for a stock from the database and
 // caches it in memory for faster access by other analysis functions. This helps
 // prevent repeated database queries for the same data.
-func Extractor(stock *models.Stock) error {
+func Add(stock *models.Stock) error {
 	candles, err := db.FetchAllCandles(stock)
 	if err != nil {
 		return fmt.Errorf("failed to fetch candles for %v: %w", stock.Symbol, err)
@@ -42,15 +44,14 @@ func Extractor(stock *models.Stock) error {
 	return nil
 }
 
-// PurgeCache removes the cached candlestick data for a specific stock.
-// This is useful when you want to force a refresh of the data from the database.
-func PurgeCache(stock *models.Stock) {
+// Purge removes the cached candlestick data for a specific stock.
+func Purge(stock *models.Stock) {
 	mu.Lock()
 	defer mu.Unlock()
 
 	_, ok := cache[stock]
 	if ok {
-		log.Printf("purged %v\n", stock.Symbol)
+		log.Printf("purged %v from cache\n", stock.Symbol)
 		delete(cache, stock)
 	}
 }

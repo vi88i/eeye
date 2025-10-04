@@ -2,8 +2,9 @@ package strategy
 
 import (
 	"eeye/src/constants"
+	"eeye/src/dataflow"
 	"eeye/src/models"
-	"eeye/src/steps"
+	"eeye/src/store"
 	"eeye/src/utils"
 	"log"
 	"strings"
@@ -15,7 +16,7 @@ import (
 // and sends the results to their respective sinks.
 func executor(strategies []models.Strategy, source <-chan *models.Stock) {
 	for stock := range source {
-		if err := steps.Extractor(stock); err != nil {
+		if err := store.Add(stock); err != nil {
 			log.Printf("historical data extraction failed for %v: %v\n", stock.Symbol, err)
 			continue
 		}
@@ -30,7 +31,7 @@ func executor(strategies []models.Strategy, source <-chan *models.Stock) {
 		}
 
 		wg.Wait()
-		steps.PurgeCache(stock)
+		store.Purge(stock)
 	}
 }
 
@@ -127,7 +128,7 @@ func aggregator(strategies []models.Strategy, done <-chan any) {
 		if len(symbols) > 0 {
 			log.Printf("%v result: \n%v\n", strategyName, strings.Join(symbols, "\n"))
 		} else {
-			log.Printf("No stocks satisfy %v\n", strategyName)
+			log.Printf("no stocks satisfy %v\n", strategyName)
 		}
 	}
 }
@@ -141,7 +142,7 @@ func Analyze() <-chan any {
 		defer close(done)
 
 		start := time.Now()
-		stocks := steps.GetStocks()
+		stocks := dataflow.GetStocks()
 
 		strategies := []models.Strategy{
 			&BullishSwing{},

@@ -1,11 +1,10 @@
-// Package strategy implements high-level trading strategies.
-// It combines various technical analysis steps to create complete
-// trading strategies and manages their execution.
+// Package strategy implements high-level trading strategies screener.
 package strategy
 
 import (
 	"eeye/src/models"
 	"eeye/src/steps"
+	"eeye/src/utils"
 )
 
 // BullishSwing strategy
@@ -13,34 +12,27 @@ type BullishSwing struct {
 	models.StrategyBaseImpl
 }
 
-//nolint:revive
+//revive:disable-next-line exported
 func (b *BullishSwing) Name() string {
 	return "Bullish Swing"
 }
 
-//nolint:revive
+//revive:disable-next-line exported
 func (b *BullishSwing) Execute(stock *models.Stock) {
 	var (
 		strategyName = b.Name()
 		sink         = b.GetSink()
 	)
 
-	screeners := []func() bool{
-		steps.BullishCandleScreener(
-			strategyName,
-			stock,
-		),
-		steps.VolumeScreener(
-			strategyName,
-			stock,
-			func(currentVolume float64, averageVolume float64) bool {
+	screeners := []models.Step{
+		&steps.BullishCandle{},
+		&steps.Volume{
+			Test: func(currentVolume float64, averageVolume float64) bool {
 				return currentVolume >= averageVolume
 			},
-		),
-		steps.RSIScreener(
-			strategyName,
-			stock,
-			func(rsi []float64) bool {
+		},
+		&steps.RSI{
+			Test: func(rsi []float64) bool {
 				var (
 					length = len(rsi)
 					v      = rsi[length-1]
@@ -48,14 +40,15 @@ func (b *BullishSwing) Execute(stock *models.Stock) {
 
 				return v >= 40.0 && v <= 60.0
 			},
-		),
-		steps.LowerBollingerBandFlatOrVShape(
-			strategyName,
-			stock,
-		),
+		},
+		&steps.BollingerBands{
+			Test: func(candles []models.Candle, sma []float64, lbb []float64, _ []float64) bool {
+				return utils.LowerBollingerBandFlatOrVShape(candles, sma, lbb)
+			},
+		},
 	}
 
-	if steps.Screen(screeners) {
+	if steps.Execute(strategyName, stock, screeners) {
 		sink <- stock
 	}
 }

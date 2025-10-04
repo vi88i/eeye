@@ -1,11 +1,14 @@
 package steps
 
-import "sync"
+import (
+	"eeye/src/models"
+	"sync"
+)
 
-// Screen runs multiple screening steps concurrently and returns true only if
+// Execute runs multiple screening steps concurrently and returns true only if
 // all steps return true. This allows combining multiple technical analysis
 // conditions that must all be satisfied for a trading signal.
-func Screen(screeners []func() bool) bool {
+func Execute(strategy string, stock *models.Stock, screeners []models.Step) bool {
 	var (
 		wg  = sync.WaitGroup{}
 		out = make(chan bool)
@@ -16,7 +19,7 @@ func Screen(screeners []func() bool) bool {
 
 		go func() {
 			defer wg.Done()
-			v := screeners[i]()
+			v := screeners[i].Screen(strategy, stock)
 			out <- v
 		}()
 	}

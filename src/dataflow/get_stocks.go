@@ -1,4 +1,6 @@
-package steps
+// Package dataflow helps in fetching stocks data from NSE
+// and fetching latest candles for each stock from Groww
+package dataflow
 
 import (
 	"eeye/src/api"
@@ -9,8 +11,9 @@ import (
 	"time"
 )
 
-// Fetch latest available stocks from NSE
+// fetchLatestStocksFromNSE fetches latest available stocks from NSE
 func fetchLatestStocksFromNSE() ([]models.Stock, string, error) {
+	log.Printf("fetching data from NSE")
 	stocks, lastTradingDay, err := api.DownloadLatestBhavcopy()
 	empty := utils.EmptySlice[models.Stock]()
 	if err != nil {
@@ -41,7 +44,7 @@ func GetStocks() []models.Stock {
 		log.Fatal(err)
 	}
 
-	Ingestor(stocks, lastTradingDay)
+	ingestor(stocks, lastTradingDay)
 	time.Sleep(time.Second * 2)
 	return stocks
 }

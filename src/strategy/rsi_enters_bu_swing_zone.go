@@ -15,12 +15,12 @@ type RSIEntersBullishSwingZone struct {
 	upperBound float64
 }
 
-//nolint:revive
+//revive:disable-next-line exported
 func (r *RSIEntersBullishSwingZone) Name() string {
 	return "RSI Enters Bullish Swing Zone"
 }
 
-//nolint:revive
+//revive:disable-next-line exported
 func (r *RSIEntersBullishSwingZone) Execute(stock *models.Stock) {
 	var (
 		strategyName = r.Name()
@@ -28,29 +28,24 @@ func (r *RSIEntersBullishSwingZone) Execute(stock *models.Stock) {
 	)
 
 	if r.baseLine == 0 {
-		log.Println("baseLine cannot be zero")
+		log.Printf("[%v] baseLine cannot be zero\n", strategyName)
 		return
 	}
 
 	if r.upperBound == 0 {
-		log.Println("upperBound cannot be zero")
+		log.Printf("[%v] upperBound cannot be zero\n", strategyName)
 		return
 	}
 
 	if r.baseLine > r.upperBound {
-		log.Println("baseLine > upperBound")
+		log.Printf("[%v] baseLine > upperBound\n", strategyName)
 		return
 	}
 
-	screeners := []func() bool{
-		steps.BullishCandleScreener(
-			strategyName,
-			stock,
-		),
-		steps.RSIScreener(
-			strategyName,
-			stock,
-			func(rsi []float64) bool {
+	screeners := []models.Step{
+		&steps.BullishCandle{},
+		&steps.RSI{
+			Test: func(rsi []float64) bool {
 				length := len(rsi)
 				if length < 2 {
 					return false
@@ -62,10 +57,10 @@ func (r *RSIEntersBullishSwingZone) Execute(stock *models.Stock) {
 				)
 				return cur >= r.baseLine && prev <= r.baseLine && cur <= r.upperBound && cur > prev
 			},
-		),
+		},
 	}
 
-	if steps.Screen(screeners) {
+	if steps.Execute(strategyName, stock, screeners) {
 		sink <- stock
 	}
 }

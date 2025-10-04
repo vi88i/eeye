@@ -1,4 +1,4 @@
-package steps
+package dataflow
 
 import (
 	"eeye/src/api"
@@ -52,10 +52,10 @@ func ingestionWorker(in <-chan *models.Stock) {
 	}
 }
 
-// Ingestor updates the historical price data for a stock by fetching new candles
+// ingestor updates the historical price data for a stock by fetching new candles
 // from the API and storing them in the database. It only fetches data newer than
 // the most recent candle in the database to avoid duplicates and minimize API calls.
-func Ingestor(stocks []models.Stock, lastTradingDay string) {
+func ingestor(stocks []models.Stock, lastTradingDay string) {
 	currentStocks, err := db.FetchAllStocks()
 	if err != nil {
 		log.Fatal(err)

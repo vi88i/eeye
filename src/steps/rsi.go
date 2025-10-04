@@ -2,11 +2,55 @@ package steps
 
 import (
 	"eeye/src/models"
+	"eeye/src/store"
 	"eeye/src/utils"
 	"log"
 	"math"
 )
 
+// RSI creates a function that screens stocks based on their Relative Strength
+// Index (RSI) value. It calculates the 14-period RSI and applies a custom screening
+// function to determine if the stock meets the criteria.
+type RSI struct {
+	Test func(rsiValues []float64) bool
+}
+
+//revive:disable-next-line exported
+func (r *RSI) Name() string {
+	return "RSI screener"
+}
+
+//revive:disable-next-line exported
+func (r *RSI) Screen(strategy string, stock *models.Stock) bool {
+	const (
+		Period = 14
+	)
+
+	step := r.Name()
+
+	candles, err := store.Get(stock)
+	if err != nil {
+		return false
+	}
+
+	var (
+		rsi       = computeRSI(candles, Period)
+		rsiLength = len(rsi)
+	)
+
+	if rsiLength == 0 {
+		log.Printf("[%v - %v] insufficient candles: %v\n", strategy, step, stock.Symbol)
+		return false
+	}
+
+	test := r.Test(rsi)
+	if !test {
+		log.Printf("[%v - %v] test failed: %v\n", strategy, step, stock.Symbol)
+	}
+	return test
+}
+
+// computeRSI is helper method to compute the RSI values
 func computeRSI(candles []models.Candle, period int) []float64 {
 	var (
 		empty  = utils.EmptySlice[float64]()
@@ -50,46 +94,4 @@ func computeRSI(candles []models.Candle, period int) []float64 {
 	}
 
 	return values
-}
-
-// RSIScreener creates a function that screens stocks based on their Relative Strength
-// Index (RSI) value. It calculates the 14-period RSI and applies a custom screening
-// function to determine if the stock meets the criteria.
-//
-// Parameters:
-//   - strategy: identifier for logging purposes
-//   - stock: the stock to analyze
-//   - screen: a function that takes the current RSI value and returns true if the
-//     stock passes the screening criteria
-func RSIScreener(
-	strategy string,
-	stock *models.Stock,
-	screen func(rsiValues []float64) bool,
-) func() bool {
-	return func() bool {
-		const (
-			Period = 14
-		)
-
-		candles, err := getCachedCandles(stock)
-		if err != nil {
-			return false
-		}
-
-		var (
-			rsi       = computeRSI(candles, Period)
-			rsiLength = len(rsi)
-		)
-
-		if rsiLength == 0 {
-			log.Printf("insufficient candles for RSI: %v\n", stock.Symbol)
-			return false
-		}
-
-		test := screen(rsi)
-		if !test {
-			log.Printf("%v failed %v RSI test\n", stock.Symbol, strategy)
-		}
-		return test
-	}
 }

@@ -2,10 +2,53 @@ package steps
 
 import (
 	"eeye/src/models"
+	"eeye/src/store"
 	"eeye/src/utils"
 	"log"
 )
 
+// EMA creates a function that screens for stocks based on their Exponential Moving Average (EMA).
+type EMA struct {
+	Period int
+	Test   func(candles []models.Candle, emas []float64) bool
+}
+
+//revive:disable-next-line exported
+func (e *EMA) Name() string {
+	return "EMA screener"
+}
+
+//revive:disable-next-line exported
+func (e *EMA) Screen(strategy string, stock *models.Stock) bool {
+	const (
+		MinEMAPoints = 1
+	)
+
+	step := e.Name()
+
+	candles, err := store.Get(stock)
+	if err != nil {
+		return false
+	}
+
+	var (
+		values    = computeEMA(candles, e.Period)
+		emaLength = len(values)
+	)
+
+	if emaLength < MinEMAPoints {
+		log.Printf("[%v - %v] insufficient candles: %v\n", strategy, step, stock.Symbol)
+		return false
+	}
+
+	test := e.Test(candles, values)
+	if !test {
+		log.Printf("[%v - %v] test failed: %v\n", strategy, step, stock.Symbol)
+	}
+	return test
+}
+
+// computeEMA is helper method to compute the EMA values
 func computeEMA(candles []models.Candle, period int) []float64 {
 	var (
 		empty  = utils.EmptySlice[float64]()
@@ -32,43 +75,4 @@ func computeEMA(candles []models.Candle, period int) []float64 {
 	}
 
 	return values
-}
-
-// EMAFakeBreakdown creates a function that screens for stocks showing a fake breakdown
-// pattern relative to their Exponential Moving Average (EMA). This pattern occurs when
-// price temporarily breaks below the EMA but quickly recovers, indicating a false bearish signal.
-//
-// Parameters:
-//   - strategyName: identifier for logging purposes
-//   - stock: the stock to analyze
-//   - period: the EMA period to use (e.g., 20 for 20-day EMA)
-func EMAFakeBreakdown(
-	strategyName string,
-	stock *models.Stock,
-	period int,
-) func() bool {
-	return func() bool {
-		const (
-			MinEMAPoints = 1
-		)
-
-		candles, err := getCachedCandles(stock)
-		if err != nil {
-			return false
-		}
-
-		var (
-			values       = computeEMA(candles, period)
-			emaLength    = len(values)
-			candleLength = len(candles)
-		)
-
-		if emaLength < MinEMAPoints {
-			log.Printf("insufficient candles for %v screener: %v\n", strategyName, stock.Symbol)
-			return false
-		}
-
-		return (candles[candleLength-1].Low <= values[emaLength-1]) &&
-			(candles[candleLength-1].High > values[emaLength-1])
-	}
 }
