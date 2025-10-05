@@ -116,7 +116,6 @@ func aggregator(strategies []models.Strategy, done <-chan any) {
 		close(agg)
 	}()
 
-	log.Println("================= Strategy Results =================")
 	for result := range agg {
 		strategyName := result.Strategy.Name()
 		symbols := utils.EmptySlice[string]()

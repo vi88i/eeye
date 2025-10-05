@@ -5,26 +5,21 @@ package main
 
 import (
 	"eeye/src/api"
-	"eeye/src/applog"
 	"eeye/src/config"
 	"eeye/src/db"
+	"eeye/src/handlers"
 	"eeye/src/strategy"
-	"os"
-	"os/signal"
-	"syscall"
 )
 
 func main() {
-	logFile := applog.Init()
+	applog := handlers.GetAppLog()
 	config.Load()
 	api.InitGrowwTradingClient()
 	api.InitNSEClient()
 	db.Connect()
 
 	done := strategy.Analyze()
-
-	quit := make(chan os.Signal, 1)
-	signal.Notify(quit, os.Interrupt, syscall.SIGTERM)
+	quit := handlers.GetInterruptHandlerChannel()
 
 	select {
 	case <-quit:
@@ -33,5 +28,5 @@ func main() {
 	}
 
 	db.Disconnect()
-	var _ = logFile.Close()
+	applog.Close()
 }
