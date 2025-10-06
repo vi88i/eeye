@@ -148,6 +148,7 @@ func Analyze() <-chan any {
 			&LowerBollingerBandBullish{},
 			&EMAFakeBreakdown{period: 50},
 			&RSIEntersBullishSwingZone{baseLine: 40, upperBound: 60},
+			&BullishMomentumBreakout{},
 		}
 
 		source, isWorkDone := spawnStrategyWorkers(strategies)

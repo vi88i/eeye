@@ -4,6 +4,7 @@ import (
 	"eeye/src/models"
 	"eeye/src/store"
 	"eeye/src/utils"
+	"fmt"
 	"log"
 )
 
@@ -15,7 +16,7 @@ type EMA struct {
 
 //revive:disable-next-line exported
 func (e *EMA) Name() string {
-	return "EMA screener"
+	return fmt.Sprintf("EMA %v screener", e.Period)
 }
 
 //revive:disable-next-line exported

@@ -32,3 +32,13 @@ func Clamp[T Numeric, R Numeric](v, minVal, maxVal T) R {
 func EmptySlice[T any]() []T {
 	return make([]T, 0)
 }
+
+// Last returns the last value of
+func Last[T any](items []T, empty T) T {
+	length := len(items)
+	if length == 0 {
+		return empty
+	}
+
+	return items[length-1]
+}
