@@ -8,23 +8,35 @@ import (
 	"eeye/src/config"
 	"eeye/src/db"
 	"eeye/src/handlers"
+	"eeye/src/mcp"
 	"eeye/src/strategy"
+	"flag"
+	"log"
 )
 
 func main() {
+	mcpMode := flag.Bool("mcp", false, "Enable to start MCP server")
+	flag.Parse()
+
 	applog := handlers.GetAppLog()
 	config.Load()
 	api.InitGrowwTradingClient()
 	api.InitNSEClient()
 	db.Connect()
 
-	done := strategy.Analyze()
-	quit := handlers.GetInterruptHandlerChannel()
+	if *mcpMode {
+		mcp.Init()
+	} else {
+		quit := handlers.GetInterruptHandlerChannel()
+		done := strategy.Analyze()
 
-	select {
-	case <-quit:
-	case <-done:
-		db.DeleteDelistedStocks()
+		select {
+		case sig := <-quit:
+			log.Println("Shutting down gracefully, signal caught:", sig.String())
+		case <-done:
+			// Do the deletion only after analysis
+			db.DeleteDelistedStocks()
+		}
 	}
 
 	db.Disconnect()

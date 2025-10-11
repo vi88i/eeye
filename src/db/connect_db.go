@@ -17,15 +17,15 @@ import (
 var Pool *pgxpool.Pool
 
 // Connect initializes the global database connection pool using configuration
-// from DBConfig. It will panic if the connection cannot be established.
+// from DB. It will panic if the connection cannot be established.
 func Connect() {
 	var databaseURL = fmt.Sprintf(
 		"postgres://%v:%v@%v:%v/%v",
-		config.DBConfig.User,
-		config.DBConfig.Password,
-		config.DBConfig.Host,
-		config.DBConfig.Port,
-		config.DBConfig.Name,
+		config.DB.User,
+		config.DB.Password,
+		config.DB.Host,
+		config.DB.Port,
+		config.DB.Name,
 	)
 
 	cfg, err := pgxpool.ParseConfig(databaseURL)

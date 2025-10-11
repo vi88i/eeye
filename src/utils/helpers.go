@@ -4,6 +4,10 @@
 package utils
 
 import (
+	"fmt"
+	"reflect"
+	"slices"
+
 	"golang.org/x/exp/constraints"
 )
 
@@ -41,4 +45,52 @@ func Last[T any](items []T, empty T) T {
 	}
 
 	return items[length-1]
+}
+
+// SelectFields creates an array of map[string]any from the items array
+// with only fields specified in the fields array
+func SelectFields[T any](items []T, fields []string) []map[string]any {
+	// We cannot do reflect.TypeOf(T) because T is a type not a variable (it expects a value)
+	// So trick is to create a zero value of T
+	var zero T
+	t := reflect.TypeOf(zero)
+	if t.Kind() != reflect.Struct {
+		panic("SelectFields: T must of struct type")
+	}
+
+	tFields := make([]string, 0, t.NumField())
+	for i := range t.NumField() {
+		tFields = append(tFields, t.Field(i).Name)
+	}
+
+	for i := range fields {
+		key := fields[i]
+		if !slices.Contains(tFields, key) {
+			panic(fmt.Sprintf("SelectFields: %v field not found", key))
+		}
+	}
+
+	ret := make([]map[string]any, 0, len(items))
+	for i := range items {
+		v := reflect.ValueOf(items[i])
+		m := map[string]any{}
+		for j := range fields {
+			key := fields[j]
+			m[key] = v.FieldByName(key).Interface()
+		}
+		ret = append(ret, m)
+	}
+
+	return ret
+}
+
+// Map helps to map an array of items to target type
+func Map[T any, U any](items []T, fn func(T) U) []U {
+	res := make([]U, 0, len(items))
+
+	for i := range items {
+		res = append(res, fn(items[i]))
+	}
+
+	return res
 }

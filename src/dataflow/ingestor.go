@@ -111,7 +111,7 @@ func ingestor(stocks []models.Stock, lastTradingDay string) {
 		in <- stocksNeedingBackfill[i]
 
 		// Make parallel calls and then sleep for the remaining time left in the second
-		if (i+1)%config.TradingAPIConfig.RequestPerSecond == 0 {
+		if (i+1)%config.Groww.RequestPerSecond == 0 {
 			elapsed := time.Since(start)
 
 			if rem := time.Second - elapsed; rem > 0 {

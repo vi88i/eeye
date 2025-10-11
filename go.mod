@@ -8,7 +8,16 @@ require (
 	github.com/joho/godotenv v1.5.1
 )
 
-require github.com/gocarina/gocsv v0.0.0-20240520201108-78e41c74b4b1
+require (
+	github.com/gocarina/gocsv v0.0.0-20240520201108-78e41c74b4b1
+	github.com/modelcontextprotocol/go-sdk v1.0.0
+)
+
+require (
+	github.com/google/jsonschema-go v0.3.0 // indirect
+	github.com/stretchr/testify v1.11.1 // indirect
+	github.com/yosida95/uritemplate/v3 v3.0.2 // indirect
+)
 
 require (
 	github.com/jackc/chunkreader/v2 v2.0.1 // indirect
@@ -22,5 +31,5 @@ require (
 	golang.org/x/crypto v0.31.0 // indirect
 	golang.org/x/exp v0.0.0-20250911091902-df9299821621
 	golang.org/x/net v0.33.0 // indirect
-	golang.org/x/text v0.21.0 // indirect
+	golang.org/x/text v0.29.0 // indirect
 )

@@ -20,7 +20,7 @@ func GetCandles(stock *models.Stock, startTime string, endTime string) ([]models
 		empty = utils.EmptySlice[models.Candle]()
 	)
 
-	loc, err := time.LoadLocation(config.DBConfig.Tz)
+	loc, err := time.LoadLocation(config.DB.Tz)
 	if err != nil {
 		return empty, fmt.Errorf("unable to load location: %w", err)
 	}

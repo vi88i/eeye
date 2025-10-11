@@ -14,7 +14,7 @@ import (
 )
 
 // GetLastCandle retrieves the most recent candlestick data for a given stock symbol.
-// The timestamp in the returned candle is adjusted to the timezone specified in DBConfig.
+// The timestamp in the returned candle is adjusted to the timezone specified in DB.
 func GetLastCandle(symbol string) (models.Candle, error) {
 	log.Printf("getting last candle for %s\n", symbol)
 	ctx := context.Background()
@@ -26,7 +26,7 @@ func GetLastCandle(symbol string) (models.Candle, error) {
 		WHERE symbol = $1
 		ORDER BY timestamp DESC
 		LIMIT 1
-	`, symbol, config.DBConfig.Tz)
+	`, symbol, config.DB.Tz)
 
 	var ret = models.Candle{
 		Symbol:    symbol,
@@ -86,7 +86,7 @@ func BackfillCandles(stock *models.Stock, candles []models.Candle) error {
 }
 
 // FetchAllCandles retrieves all stored candlestick data for a given stock.
-// The timestamps in the returned candles are adjusted to the timezone specified in DBConfig.
+// The timestamps in the returned candles are adjusted to the timezone specified in DB.
 func FetchAllCandles(stock *models.Stock) ([]models.Candle, error) {
 	log.Printf("fetching all candles: %v\n", stock.Symbol)
 	ctx := context.Background()
@@ -96,7 +96,7 @@ func FetchAllCandles(stock *models.Stock) ([]models.Candle, error) {
 		FROM stock_prices
 		WHERE symbol = $1
 		ORDER BY timestamp ASC
-	`, stock.Symbol, config.DBConfig.Tz)
+	`, stock.Symbol, config.DB.Tz)
 
 	var (
 		empty = utils.EmptySlice[models.Candle]()
@@ -181,7 +181,7 @@ func FetchOutOfSyncStock(lastTradingDay string) ([]models.Stock, error) {
 		GROUP BY symbol
 		HAVING MAX(timestamp) <> TIMESTAMPTZ '%v'
 		ORDER BY symbol ASC
-	`, fmt.Sprintf("%v 00:00:00 %v", lastTradingDay, config.DBConfig.Tz))
+	`, fmt.Sprintf("%v 00:00:00 %v", lastTradingDay, config.DB.Tz))
 	rows, err := Pool.Query(ctx, query)
 
 	var (

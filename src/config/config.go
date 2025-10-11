@@ -13,9 +13,9 @@ import (
 	"github.com/joho/godotenv"
 )
 
-// TradingAPIConfig holds configuration for the trading API connection.
+// Groww holds configuration for the trading API connection.
 // It includes authentication, endpoint, and rate limiting settings.
-var TradingAPIConfig = struct {
+var Groww = struct {
 	// AccessToken is the API authentication token
 	AccessToken string
 
@@ -32,8 +32,8 @@ var TradingAPIConfig = struct {
 	RequestPerSecond int
 }{RequestPerSecond: constants.MinRequestPerSecond}
 
-// DBConfig holds the PostgreSQL database connection configuration.
-var DBConfig = struct {
+// DB holds the PostgreSQL database connection configuration.
+var DB = struct {
 	// Host is the database server hostname
 	Host string
 
@@ -53,10 +53,19 @@ var DBConfig = struct {
 	Tz string
 }{}
 
-// NSEConfig holds configuration for NSE Bhavcopy downloads
-var NSEConfig = struct {
+// NSE holds configuration for NSE Bhavcopy downloads
+var NSE = struct {
 	// BaseURL is the base URL for NSE Bhavcopy downloads
 	BaseURL string
+}{}
+
+// MCP holds the MCP server configuration
+var MCP = struct {
+	// Host is the MCP server host
+	Host string
+
+	// Port is the MCP server port
+	Port string
 }{}
 
 // Load reads configuration from environment variables and initializes
@@ -68,21 +77,21 @@ func Load() {
 		log.Fatalf("error loading .env file")
 	}
 
-	TradingAPIConfig.AccessToken = os.Getenv("GROWW_ACCESS_TOKEN")
-	TradingAPIConfig.BaseURL = os.Getenv("GROWW_BASE_URL")
-	TradingAPIConfig.APIVersion = os.Getenv("GROWW_API_VERSION")
-	TradingAPIConfig.XAPIVersion = os.Getenv("GROWW_X_API_VERSION")
+	Groww.AccessToken = os.Getenv("GROWW_ACCESS_TOKEN")
+	Groww.BaseURL = os.Getenv("GROWW_BASE_URL")
+	Groww.APIVersion = os.Getenv("GROWW_API_VERSION")
+	Groww.XAPIVersion = os.Getenv("GROWW_X_API_VERSION")
 
-	DBConfig.Host = os.Getenv("EEYE_DB_HOST")
-	DBConfig.Port = os.Getenv("EEYE_DB_PORT")
-	DBConfig.User = os.Getenv("EEYE_DB_USER")
-	DBConfig.Password = os.Getenv("EEYE_DB_PASSWORD")
-	DBConfig.Name = os.Getenv("EEYE_DB_NAME")
-	DBConfig.Tz = os.Getenv("EEYE_TZ")
+	DB.Host = os.Getenv("EEYE_DB_HOST")
+	DB.Port = os.Getenv("EEYE_DB_PORT")
+	DB.User = os.Getenv("EEYE_DB_USER")
+	DB.Password = os.Getenv("EEYE_DB_PASSWORD")
+	DB.Name = os.Getenv("EEYE_DB_NAME")
+	DB.Tz = os.Getenv("EEYE_TZ")
 
 	requestPerSecond, err := strconv.Atoi(os.Getenv("GROWW_RPS"))
 	if err == nil {
-		TradingAPIConfig.RequestPerSecond = utils.Clamp[int, int](
+		Groww.RequestPerSecond = utils.Clamp[int, int](
 			requestPerSecond,
 			constants.MinRequestPerSecond,
 			constants.MaxRequestPerSecond,
@@ -91,5 +100,8 @@ func Load() {
 		log.Println("invalid GROWW_RPS defaulting to", constants.MaxRequestPerSecond)
 	}
 
-	NSEConfig.BaseURL = os.Getenv("NSE_BHAVCOPY_BASE_URL")
+	NSE.BaseURL = os.Getenv("NSE_BHAVCOPY_BASE_URL")
+
+	MCP.Host = os.Getenv("MCP_HOST")
+	MCP.Port = os.Getenv("MCP_PORT")
 }

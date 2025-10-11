@@ -25,7 +25,7 @@ func InitNSEClient() {
 	NseClient = resty.New()
 	NseClient.SetHeader("User-Agent", constants.ReqNSEUserAgent)
 	NseClient.SetHeader("Accept", "application/json")
-	NseClient.SetBaseURL(config.NSEConfig.BaseURL)
+	NseClient.SetBaseURL(config.NSE.BaseURL)
 }
 
 // InitGrowwTradingClient initializes the global HTTP client with proper configuration
@@ -33,8 +33,8 @@ func InitNSEClient() {
 // API version headers, and base URL.
 func InitGrowwTradingClient() {
 	GrowwClient = resty.New()
-	GrowwClient.SetHeader("Authorization", "Bearer "+config.TradingAPIConfig.AccessToken)
-	GrowwClient.SetHeader("X-API-VERSION", config.TradingAPIConfig.XAPIVersion)
+	GrowwClient.SetHeader("Authorization", "Bearer "+config.Groww.AccessToken)
+	GrowwClient.SetHeader("X-API-VERSION", config.Groww.XAPIVersion)
 	GrowwClient.SetHeader("Accept", "application/json")
-	GrowwClient.SetBaseURL(fmt.Sprintf("%v/%v", config.TradingAPIConfig.BaseURL, config.TradingAPIConfig.APIVersion))
+	GrowwClient.SetBaseURL(fmt.Sprintf("%v/%v", config.Groww.BaseURL, config.Groww.APIVersion))
 }
