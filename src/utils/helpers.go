@@ -7,6 +7,7 @@ import (
 	"fmt"
 	"reflect"
 	"slices"
+	"strconv"
 
 	"golang.org/x/exp/constraints"
 )
@@ -109,4 +110,10 @@ func PadLeft[T any](items []T, total int, fill T) []T {
 	}
 
 	return append(res, items...)
+}
+
+// Round2 rounds off the float64 to two decimal places
+func Round2(num float64) float64 {
+	rounded, _ := strconv.ParseFloat(fmt.Sprintf("%.2f", num), 64)
+	return rounded
 }

@@ -40,10 +40,10 @@ func getTechnicalData(
 			candles,
 			func(candle models.Candle) OHLC {
 				return OHLC{
-					Open:  candle.Open,
-					High:  candle.High,
-					Low:   candle.Low,
-					Close: candle.Close,
+					Open:  utils.Round2(candle.Open),
+					High:  utils.Round2(candle.High),
+					Low:   utils.Round2(candle.Low),
+					Close: utils.Round2(candle.Close),
 				}
 			},
 		)
@@ -65,12 +65,12 @@ func getTechnicalData(
 					Timestamp: timestamps[i],
 					OHLC:      ohlc[i],
 					Indicators: Indicators{
-						RSI:    rsi[i],
-						EMA5:   ema5[i],
-						EMA13:  ema13[i],
-						EMA26:  ema26[i],
-						EMA50:  ema50[i],
-						Volume: volume[i],
+						RSI:    utils.Round2(rsi[i]),
+						EMA5:   utils.Round2(ema5[i]),
+						EMA13:  utils.Round2(ema13[i]),
+						EMA26:  utils.Round2(ema26[i]),
+						EMA50:  utils.Round2(ema50[i]),
+						Volume: utils.Round2(volume[i]),
 					},
 				})
 			}
