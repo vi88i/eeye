@@ -108,3 +108,9 @@ The start script will:
 3. Run the application with `go run`
 
 Note: Make sure you've completed the database setup and configuration steps before running the application.
+
+---
+
+⚠️ Disclaimer
+
+This app is for educational purposes only and does not provide financial advice. Use at your own risk. Always do your own research before making investment decisions.
