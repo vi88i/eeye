@@ -34,7 +34,7 @@ func (r *RSI) Screen(strategy string, stock *models.Stock) bool {
 	}
 
 	var (
-		rsi       = computeRSI(candles, Period)
+		rsi       = ComputeRSI(candles, Period)
 		rsiLength = len(rsi)
 	)
 
@@ -50,8 +50,8 @@ func (r *RSI) Screen(strategy string, stock *models.Stock) bool {
 	return test
 }
 
-// computeRSI is helper method to compute the RSI values
-func computeRSI(candles []models.Candle, period int) []float64 {
+// ComputeRSI is helper method to compute the RSI values
+func ComputeRSI(candles []models.Candle, period int) []float64 {
 	var (
 		empty  = utils.EmptySlice[float64]()
 		length = len(candles)

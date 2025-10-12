@@ -4,6 +4,7 @@ import (
 	"eeye/src/constants"
 	"eeye/src/models"
 	"eeye/src/store"
+	"eeye/src/utils"
 	"log"
 )
 
@@ -33,20 +34,10 @@ func (v *Volume) Screen(strategy string, stock *models.Stock) bool {
 	}
 
 	length := len(candles)
+	volumeMA := ComputeVolumeMA(candles, Period)
 	if length < Period {
 		log.Printf("[%v - %v] insufficient candles: %v\n", strategy, step, stock.Symbol)
 		return false
-	}
-
-	sum := 0.0
-	volumeMA := make([]float64, 0, constants.LookBackDays)
-	for index := range candles {
-		candle := &candles[index]
-		sum += float64(candle.Volume)
-		if index+1 >= Period {
-			volumeMA = append(volumeMA, sum/Period)
-			sum -= float64(candles[index-Period+1].Volume)
-		}
 	}
 
 	maLength := len(volumeMA)
@@ -55,4 +46,24 @@ func (v *Volume) Screen(strategy string, stock *models.Stock) bool {
 		log.Printf("[%v - %v] test failed: %v\n", strategy, step, stock.Symbol)
 	}
 	return test
+}
+
+// ComputeVolumeMA returns simple moving average of trading volumes for the given period
+func ComputeVolumeMA(candles []models.Candle, period int) []float64 {
+	if len(candles) < period {
+		return utils.EmptySlice[float64]()
+	}
+
+	sum := 0.0
+	volumeMA := make([]float64, 0, constants.LookBackDays)
+	for index := range candles {
+		candle := &candles[index]
+		sum += float64(candle.Volume)
+		if index+1 >= period {
+			volumeMA = append(volumeMA, sum/float64(period))
+			sum -= float64(candles[index-period+1].Volume)
+		}
+	}
+
+	return volumeMA
 }

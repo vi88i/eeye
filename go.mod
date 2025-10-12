@@ -1,6 +1,6 @@
 module eeye
 
-go 1.24.5
+go 1.25
 
 require (
 	github.com/go-resty/resty/v2 v2.16.5
@@ -10,12 +10,16 @@ require (
 
 require (
 	github.com/gocarina/gocsv v0.0.0-20240520201108-78e41c74b4b1
+	github.com/kaptinlin/jsonschema v0.5.0
 	github.com/modelcontextprotocol/go-sdk v1.0.0
 )
 
 require (
+	github.com/go-json-experiment/json v0.0.0-20250910080747-cc2cfa0554c3 // indirect
+	github.com/goccy/go-yaml v1.18.0 // indirect
 	github.com/google/jsonschema-go v0.3.0 // indirect
-	github.com/stretchr/testify v1.11.1 // indirect
+	github.com/kaptinlin/go-i18n v0.2.0 // indirect
+	github.com/kaptinlin/messageformat-go v0.4.5 // indirect
 	github.com/yosida95/uritemplate/v3 v3.0.2 // indirect
 )
 

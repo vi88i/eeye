@@ -33,7 +33,7 @@ func (e *EMA) Screen(strategy string, stock *models.Stock) bool {
 	}
 
 	var (
-		values    = computeEMA(candles, e.Period)
+		values    = ComputeEMA(candles, e.Period)
 		emaLength = len(values)
 	)
 
@@ -49,8 +49,8 @@ func (e *EMA) Screen(strategy string, stock *models.Stock) bool {
 	return test
 }
 
-// computeEMA is helper method to compute the EMA values
-func computeEMA(candles []models.Candle, period int) []float64 {
+// ComputeEMA is helper method to compute the EMA values
+func ComputeEMA(candles []models.Candle, period int) []float64 {
 	var (
 		empty  = utils.EmptySlice[float64]()
 		length = len(candles)

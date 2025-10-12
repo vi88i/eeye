@@ -29,7 +29,7 @@ func (e *EMACrossover) Screen(strategy string, stock *models.Stock) bool {
 	}
 
 	for i, period := range e.Periods {
-		emas = append(emas, computeEMA(candles, period))
+		emas = append(emas, ComputeEMA(candles, period))
 		if len(emas[i]) == 0 {
 			log.Printf("[%v - %v] insufficient candles for EMA %v: %v\n", strategy, step, period, stock.Symbol)
 			return false

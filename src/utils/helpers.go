@@ -94,3 +94,19 @@ func Map[T any, U any](items []T, fn func(T) U) []U {
 
 	return res
 }
+
+// PadLeft pads a slice at the beginning with the given filler value
+func PadLeft[T any](items []T, total int, fill T) []T {
+	currentLength := len(items)
+	if currentLength >= total {
+		return items
+	}
+
+	rem := total - currentLength
+	res := make([]T, 0, rem)
+	for range rem {
+		res = append(res, fill)
+	}
+
+	return append(res, items...)
+}
