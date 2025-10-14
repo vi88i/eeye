@@ -14,9 +14,114 @@
 
 ## How it works?
 
-1. **Fetch Stock Data**: The application fetches historical stock data from the Groww API.
-2. **Apply Screening Steps**: Each stock is processed through a series of screening steps defined in the strategy executor. These steps include various technical analysis techniques.
-3. **Output Results**: Stocks that pass all screening steps are printed to the console as potential trading opportunities.
+The eeye stock screener operates through a multi-stage pipeline that efficiently processes thousands of stocks in parallel:
+
+### 1. Data Acquisition Phase
+
+**NSE Stock Discovery**
+- Downloads the latest NSE Bhavcopy (daily market report) containing all listed stocks
+- Filters stocks to include only equity shares (EQ series) that are currently listed
+- Identifies the last trading day to determine data freshness
+
+**Database Synchronization**
+- Compares fetched stocks with existing database records
+- Identifies three categories of stocks:
+  - **Newly listed stocks**: Never seen before in the database
+  - **Out-of-sync stocks**: Missing recent trading data
+  - **De-listed stocks**: No longer present in NSE data (cleaned up with `--cleanup` flag)
+
+**Historical Data Backfill**
+- Uses multiple worker goroutines to fetch missing historical data in parallel
+- Respects API rate limits (configurable requests per second)
+- Fetches OHLCV (Open, High, Low, Close, Volume) data from Groww API
+- Stores data in TimescaleDB hypertable for efficient time-series queries
+
+### 2. Analysis Phase
+
+**In-Memory Caching**
+- Loads required stock data into memory cache for fast access
+- Avoids repeated database queries during analysis
+
+**Parallel Strategy Execution**
+- Spawns multiple worker goroutines to process stocks concurrently
+- Each stock is evaluated against all configured strategies simultaneously
+- Strategies are completely independent and run in parallel
+
+**Strategy Screening Pipeline**
+
+Each strategy consists of multiple screening steps that must ALL pass. Stocks are evaluated using technical indicators (EMA, RSI, Bollinger Bands, Volume MA), pattern recognition, and custom logic specific to each strategy.
+
+### 3. Results Aggregation
+
+**Collection**
+- Each strategy collects stocks that pass all its screening steps
+- Results are aggregated from all parallel workers
+
+**Output**
+- Prints matching stock symbols grouped by strategy
+- Logs execution time and performance metrics
+
+### 4. Optional Modes
+
+**MCP Server Mode** (`--mcp` flag)
+- Runs as an HTTP server providing Model Context Protocol interface
+- Exposes tools for querying technical data and OHLC information
+- Allows AI assistants like Claude to analyze stock data interactively
+- No automated screening in this mode - responds to queries on demand
+
+**Cleanup Mode** (`--cleanup` flag)
+- Removes data for de-listed stocks after analysis completes
+- Keeps database size manageable and data relevant
+
+### Architecture Highlights
+
+```
+┌─────────────────────────────────────────────────────────────┐
+│                     NSE Bhavcopy API                        │
+└────────────────────────┬────────────────────────────────────┘
+                         │ Download
+                         ▼
+              ┌──────────────────────┐
+              │   Stock Discovery    │
+              └──────────┬───────────┘
+                         │ Identify gaps
+                         ▼
+              ┌──────────────────────┐
+              │  Parallel Ingestion  │◄──── Groww API (OHLCV data)
+              │   (Worker Pool)      │
+              └──────────┬───────────┘
+                         │ Store
+                         ▼
+              ┌──────────────────────┐
+              │   TimescaleDB        │
+              │   (Hypertable)       │
+              └──────────┬───────────┘
+                         │ Load to cache
+                         ▼
+              ┌──────────────────────┐
+              │   In-Memory Cache    │
+              └──────────┬───────────┘
+                         │ Feed stocks
+                         ▼
+        ┌────────────────────────────────────┐
+        │   Strategy Workers (Parallel)      │
+        │  ┌──────────────────────────────┐  │
+        │  │  Strategy 1: Bullish Swing   │  │
+        │  │  Strategy 2: EMA Breakdown   │  │
+        │  │  Strategy 3: RSI Momentum    │  │
+        │  │  Strategy 4: BB Reversal     │  │
+        │  │  Strategy 5: Breakout        │  │
+        │  └──────────────────────────────┘  │
+        └────────────────┬───────────────────┘
+                         │ Collect results
+                         ▼
+              ┌──────────────────────┐
+              │  Results Aggregator  │
+              └──────────┬───────────┘
+                         │ Print
+                         ▼
+                    Console Output
+```
 
 # Installation
 
