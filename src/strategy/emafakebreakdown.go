@@ -6,19 +6,19 @@ import (
 	"fmt"
 )
 
-// EMAFakeBreakdown strategy
-type EMAFakeBreakdown struct {
+// EmaFakeBreakdown strategy
+type EmaFakeBreakdown struct {
 	models.StrategyBaseImpl
 	period int
 }
 
 //revive:disable-next-line exported
-func (e *EMAFakeBreakdown) Name() string {
+func (e *EmaFakeBreakdown) Name() string {
 	return fmt.Sprintf("EMA %v fake breakdown", e.period)
 }
 
 //revive:disable-next-line exported
-func (e *EMAFakeBreakdown) Execute(stock *models.Stock) {
+func (e *EmaFakeBreakdown) Execute(stock *models.Stock) {
 	var (
 		strategyName = e.Name()
 		sink         = e.GetSink()
@@ -26,7 +26,7 @@ func (e *EMAFakeBreakdown) Execute(stock *models.Stock) {
 
 	screeners := []models.Step{
 		&steps.BullishCandle{},
-		&steps.EMA{
+		&steps.Ema{
 			Period: e.period,
 			Test: func(candles []models.Candle, ema []float64) bool {
 				candleLength := len(candles)

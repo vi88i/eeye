@@ -6,19 +6,19 @@ import (
 	"log"
 )
 
-// EMACrossover helps to check if the EMAs of different periods are in crossover state
-type EMACrossover struct {
+// EmaCrossover helps to check if the EMAs of different periods are in crossover state
+type EmaCrossover struct {
 	Periods []int
 	Test    func(emas [][]float64) bool
 }
 
 //revive:disable-next-line exported
-func (e *EMACrossover) Name() string {
+func (e *EmaCrossover) Name() string {
 	return "EMA crossover"
 }
 
 //revive:disable-next-line exported
-func (e *EMACrossover) Screen(strategy string, stock *models.Stock) bool {
+func (e *EmaCrossover) Screen(strategy string, stock *models.Stock) bool {
 	var emas [][]float64
 
 	step := e.Name()
@@ -29,7 +29,7 @@ func (e *EMACrossover) Screen(strategy string, stock *models.Stock) bool {
 	}
 
 	for i, period := range e.Periods {
-		emas = append(emas, ComputeEMA(candles, period))
+		emas = append(emas, ComputeEma(candles, period))
 		if len(emas[i]) == 0 {
 			log.Printf("[%v - %v] insufficient candles for EMA %v: %v\n", strategy, step, period, stock.Symbol)
 			return false

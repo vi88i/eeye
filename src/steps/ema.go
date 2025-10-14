@@ -8,19 +8,19 @@ import (
 	"log"
 )
 
-// EMA creates a function that screens for stocks based on their Exponential Moving Average (EMA).
-type EMA struct {
+// Ema creates a function that screens for stocks based on their Exponential Moving Average (EMA).
+type Ema struct {
 	Period int
 	Test   func(candles []models.Candle, emas []float64) bool
 }
 
 //revive:disable-next-line exported
-func (e *EMA) Name() string {
+func (e *Ema) Name() string {
 	return fmt.Sprintf("EMA %v screener", e.Period)
 }
 
 //revive:disable-next-line exported
-func (e *EMA) Screen(strategy string, stock *models.Stock) bool {
+func (e *Ema) Screen(strategy string, stock *models.Stock) bool {
 	const (
 		MinEMAPoints = 1
 	)
@@ -33,7 +33,7 @@ func (e *EMA) Screen(strategy string, stock *models.Stock) bool {
 	}
 
 	var (
-		values    = ComputeEMA(candles, e.Period)
+		values    = ComputeEma(candles, e.Period)
 		emaLength = len(values)
 	)
 
@@ -49,8 +49,8 @@ func (e *EMA) Screen(strategy string, stock *models.Stock) bool {
 	return test
 }
 
-// ComputeEMA is helper method to compute the EMA values
-func ComputeEMA(candles []models.Candle, period int) []float64 {
+// ComputeEma is helper method to compute the EMA values
+func ComputeEma(candles []models.Candle, period int) []float64 {
 	var (
 		empty  = utils.EmptySlice[float64]()
 		length = len(candles)

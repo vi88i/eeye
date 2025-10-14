@@ -31,7 +31,7 @@ func (b *BullishSwing) Execute(stock *models.Stock) {
 				return currentVolume >= averageVolume
 			},
 		},
-		&steps.RSI{
+		&steps.Rsi{
 			Test: func(rsi []float64) bool {
 				var (
 					length = len(rsi)

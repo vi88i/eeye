@@ -38,8 +38,8 @@ func getTechnicalData(
 		timestamps = utils.GetTimestamps(candles)
 		ohlc       = utils.Map(
 			candles,
-			func(candle models.Candle) OHLC {
-				return OHLC{
+			func(candle models.Candle) Ohlc {
+				return Ohlc{
 					Open:  utils.Round2(candle.Open),
 					High:  utils.Round2(candle.High),
 					Low:   utils.Round2(candle.Low),
@@ -48,11 +48,11 @@ func getTechnicalData(
 			},
 		)
 		totalItems = len(timestamps)
-		rsi        = utils.PadLeft(steps.ComputeRSI(candles, 14), totalItems, -1)
-		ema5       = utils.PadLeft(steps.ComputeEMA(candles, 5), totalItems, -1)
-		ema13      = utils.PadLeft(steps.ComputeEMA(candles, 13), totalItems, -1)
-		ema26      = utils.PadLeft(steps.ComputeEMA(candles, 26), totalItems, -1)
-		ema50      = utils.PadLeft(steps.ComputeEMA(candles, 50), totalItems, -1)
+		rsi        = utils.PadLeft(steps.ComputeRsi(candles, 14), totalItems, -1)
+		ema5       = utils.PadLeft(steps.ComputeEma(candles, 5), totalItems, -1)
+		ema13      = utils.PadLeft(steps.ComputeEma(candles, 13), totalItems, -1)
+		ema26      = utils.PadLeft(steps.ComputeEma(candles, 26), totalItems, -1)
+		ema50      = utils.PadLeft(steps.ComputeEma(candles, 50), totalItems, -1)
 		volume     = utils.PadLeft(steps.ComputeVolumeMA(candles, 20), totalItems, -1)
 	)
 
@@ -63,13 +63,13 @@ func getTechnicalData(
 			for i := range totalItems {
 				data = append(data, TechnicalData{
 					Timestamp: timestamps[i],
-					OHLC:      ohlc[i],
+					Ohlc:      ohlc[i],
 					Indicators: Indicators{
-						RSI:    utils.Round2(rsi[i]),
-						EMA5:   utils.Round2(ema5[i]),
-						EMA13:  utils.Round2(ema13[i]),
-						EMA26:  utils.Round2(ema26[i]),
-						EMA50:  utils.Round2(ema50[i]),
+						Rsi:    utils.Round2(rsi[i]),
+						Ema5:   utils.Round2(ema5[i]),
+						Ema13:  utils.Round2(ema13[i]),
+						Ema26:  utils.Round2(ema26[i]),
+						Ema50:  utils.Round2(ema50[i]),
 						Volume: utils.Round2(volume[i]),
 					},
 				})
@@ -88,11 +88,11 @@ func getTechnicalData(
 func getOhlcData(
 	_ context.Context,
 	_ *mcp.CallToolRequest,
-	input GetOHLCDataInput,
-) (*mcp.CallToolResult, GetOHLCDataOutput, error) {
-	res := GetOHLCDataInputSchema.Validate(input)
+	input GetOhlcDataInput,
+) (*mcp.CallToolResult, GetOhlcDataOutput, error) {
+	res := GetOhlcDataInputSchema.Validate(input)
 	if !res.IsValid() {
-		return nil, GetOHLCDataOutput{}, fmt.Errorf("schema error: %v", res.Error())
+		return nil, GetOhlcDataOutput{}, fmt.Errorf("schema error: %v", res.Error())
 	}
 
 	stock := models.Stock{
@@ -103,7 +103,7 @@ func getOhlcData(
 	}
 	candles, err := db.FetchAllCandles(&stock)
 	if err != nil {
-		return nil, GetOHLCDataOutput{}, fmt.Errorf("db failure: %v", err)
+		return nil, GetOhlcDataOutput{}, fmt.Errorf("db failure: %v", err)
 	}
 
 	var (
@@ -111,14 +111,14 @@ func getOhlcData(
 		totalItems = len(timestamps)
 	)
 
-	out := GetOHLCDataOutput{
+	out := GetOhlcDataOutput{
 		Symbol: input.Symbol,
-		Data: func() []OHLCWithTimestamp {
-			data := make([]OHLCWithTimestamp, 0, totalItems)
+		Data: func() []OhlcWithTimestamp {
+			data := make([]OhlcWithTimestamp, 0, totalItems)
 			for i := range totalItems {
-				data = append(data, OHLCWithTimestamp{
+				data = append(data, OhlcWithTimestamp{
 					Timestamp: timestamps[i],
-					OHLC: []float64{
+					Ohlc: []float64{
 						utils.Round2(candles[i].Open),
 						utils.Round2(candles[i].High),
 						utils.Round2(candles[i].Low),
@@ -156,8 +156,8 @@ func addTools(server *mcp.Server) {
 			Name:         "getOhlcData",
 			Title:        "OHLC data of symbol",
 			Description:  "Gives OHLC with timestamp for the given symbol",
-			InputSchema:  json.RawMessage(ResolvedSchema[GetOHLCDataInputSchema]),
-			OutputSchema: json.RawMessage(ResolvedSchema[GetOHLCDataOutputSchema]),
+			InputSchema:  json.RawMessage(ResolvedSchema[GetOhlcDataInputSchema]),
+			OutputSchema: json.RawMessage(ResolvedSchema[GetOhlcDataOutputSchema]),
 		},
 		getOhlcData,
 	)

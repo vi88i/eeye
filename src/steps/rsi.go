@@ -8,20 +8,20 @@ import (
 	"math"
 )
 
-// RSI creates a function that screens stocks based on their Relative Strength
+// Rsi creates a function that screens stocks based on their Relative Strength
 // Index (RSI) value. It calculates the 14-period RSI and applies a custom screening
 // function to determine if the stock meets the criteria.
-type RSI struct {
+type Rsi struct {
 	Test func(rsiValues []float64) bool
 }
 
 //revive:disable-next-line exported
-func (r *RSI) Name() string {
+func (r *Rsi) Name() string {
 	return "RSI screener"
 }
 
 //revive:disable-next-line exported
-func (r *RSI) Screen(strategy string, stock *models.Stock) bool {
+func (r *Rsi) Screen(strategy string, stock *models.Stock) bool {
 	const (
 		Period = 14
 	)
@@ -34,7 +34,7 @@ func (r *RSI) Screen(strategy string, stock *models.Stock) bool {
 	}
 
 	var (
-		rsi       = ComputeRSI(candles, Period)
+		rsi       = ComputeRsi(candles, Period)
 		rsiLength = len(rsi)
 	)
 
@@ -50,8 +50,8 @@ func (r *RSI) Screen(strategy string, stock *models.Stock) bool {
 	return test
 }
 
-// ComputeRSI is helper method to compute the RSI values
-func ComputeRSI(candles []models.Candle, period int) []float64 {
+// ComputeRsi is helper method to compute the RSI values
+func ComputeRsi(candles []models.Candle, period int) []float64 {
 	var (
 		empty  = utils.EmptySlice[float64]()
 		length = len(candles)

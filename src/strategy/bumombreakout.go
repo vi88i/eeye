@@ -27,7 +27,7 @@ func (b *BullishMomentumBreakout) Execute(stock *models.Stock) {
 
 	screeners := []models.Step{
 		&steps.BullishCandle{},
-		&steps.RSI{
+		&steps.Rsi{
 			Test: func(rsi []float64) bool {
 				length := len(rsi)
 
@@ -39,7 +39,7 @@ func (b *BullishMomentumBreakout) Execute(stock *models.Stock) {
 					rsi[length-1] > 60
 			},
 		},
-		&steps.EMA{
+		&steps.Ema{
 			Period: 50,
 			Test: func(candles []models.Candle, emas []float64) bool {
 				var (
@@ -60,7 +60,7 @@ func (b *BullishMomentumBreakout) Execute(stock *models.Stock) {
 				return candles[candleLength-1].High > ubb[ubbLength-1]
 			},
 		},
-		&steps.EMACrossover{
+		&steps.EmaCrossover{
 			Periods: []int{5, 13, 26, 50, 200},
 			Test: func(emas [][]float64) bool {
 				prev := math.Inf(1)

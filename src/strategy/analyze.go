@@ -146,8 +146,8 @@ func Analyze() <-chan any {
 		strategies := []models.Strategy{
 			&BullishSwing{},
 			&LowerBollingerBandBullish{},
-			&EMAFakeBreakdown{period: 50},
-			&RSIEntersBullishSwingZone{baseLine: 40, upperBound: 60},
+			&EmaFakeBreakdown{period: 50},
+			&RsiEntersBullishSwingZone{baseLine: 40, upperBound: 60},
 			&BullishMomentumBreakout{},
 		}
 

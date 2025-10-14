@@ -22,7 +22,7 @@ func main() {
 	applog := handlers.GetAppLog()
 	config.Load()
 	api.InitGrowwTradingClient()
-	api.InitNSEClient()
+	api.InitNseClient()
 	db.Connect()
 
 	if *mcpMode {

@@ -18,10 +18,10 @@ var GrowwClient *resty.Client
 // NseClient is the shared HTTP client for making requests to the NSE API.
 var NseClient *resty.Client
 
-// InitNSEClient initializes the global HTTP client with proper configuration
+// InitNseClient initializes the global HTTP client with proper configuration
 // for making requests to the NSE API. This includes setting up headers
 // and base URL.
-func InitNSEClient() {
+func InitNseClient() {
 	NseClient = resty.New()
 	NseClient.SetHeader("User-Agent", constants.ReqNSEUserAgent)
 	NseClient.SetHeader("Accept", "application/json")

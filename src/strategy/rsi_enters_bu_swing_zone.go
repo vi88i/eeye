@@ -6,9 +6,9 @@ import (
 	"log"
 )
 
-// RSIEntersBullishSwingZone strategy which detects stocks whose price moved,
+// RsiEntersBullishSwingZone strategy which detects stocks whose price moved,
 // from below baseLine to above baseLine but bounded by upperBound
-type RSIEntersBullishSwingZone struct {
+type RsiEntersBullishSwingZone struct {
 	models.StrategyBaseImpl
 
 	baseLine   float64
@@ -16,12 +16,12 @@ type RSIEntersBullishSwingZone struct {
 }
 
 //revive:disable-next-line exported
-func (r *RSIEntersBullishSwingZone) Name() string {
+func (r *RsiEntersBullishSwingZone) Name() string {
 	return "RSI Enters Bullish Swing Zone"
 }
 
 //revive:disable-next-line exported
-func (r *RSIEntersBullishSwingZone) Execute(stock *models.Stock) {
+func (r *RsiEntersBullishSwingZone) Execute(stock *models.Stock) {
 	var (
 		strategyName = r.Name()
 		sink         = r.GetSink()
@@ -44,7 +44,7 @@ func (r *RSIEntersBullishSwingZone) Execute(stock *models.Stock) {
 
 	screeners := []models.Step{
 		&steps.BullishCandle{},
-		&steps.RSI{
+		&steps.Rsi{
 			Test: func(rsi []float64) bool {
 				length := len(rsi)
 				if length < 2 {

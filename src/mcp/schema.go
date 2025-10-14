@@ -14,12 +14,12 @@ type GetTechnicalDataInput struct {
 }
 
 //revive:disable-next-line exported
-type GetOHLCDataInput struct {
+type GetOhlcDataInput struct {
 	Symbol string `json:"symbol"`
 }
 
 //revive:disable-next-line exported
-type OHLC struct {
+type Ohlc struct {
 	Open  float64 `json:"open"`
 	High  float64 `json:"high"`
 	Low   float64 `json:"low"`
@@ -29,17 +29,17 @@ type OHLC struct {
 //revive:disable-next-line exported
 type Indicators struct {
 	Volume float64 `json:"volume"`
-	EMA5   float64 `json:"ema5"`
-	EMA13  float64 `json:"ema13"`
-	EMA26  float64 `json:"ema26"`
-	EMA50  float64 `json:"ema50"`
-	RSI    float64 `json:"rsi"`
+	Ema5   float64 `json:"ema5"`
+	Ema13  float64 `json:"ema13"`
+	Ema26  float64 `json:"ema26"`
+	Ema50  float64 `json:"ema50"`
+	Rsi    float64 `json:"rsi"`
 }
 
 //revive:disable-next-line exported
 type TechnicalData struct {
 	Timestamp  time.Time  `json:"date"`
-	OHLC       OHLC       `json:"ohlc"`
+	Ohlc       Ohlc       `json:"ohlc"`
 	Indicators Indicators `json:"indicators"`
 }
 
@@ -50,15 +50,15 @@ type GetTechnicalDataOutput struct {
 }
 
 //revive:disable-next-line exported
-type OHLCWithTimestamp struct {
+type OhlcWithTimestamp struct {
 	Timestamp time.Time `json:"date"`
-	OHLC      []float64 `json:"ohlc"`
+	Ohlc      []float64 `json:"ohlc"`
 }
 
 //revive:disable-next-line exported
-type GetOHLCDataOutput struct {
+type GetOhlcDataOutput struct {
 	Symbol string              `json:"symbol"`
-	Data   []OHLCWithTimestamp `json:"data"`
+	Data   []OhlcWithTimestamp `json:"data"`
 }
 
 var (
@@ -131,8 +131,8 @@ var (
 			),
 		),
 	)
-	// GetOHLCDataInputSchema is the jsonrpc schema for GetOHLCData tool input
-	GetOHLCDataInputSchema = jsonschema.Object(
+	// GetOhlcDataInputSchema is the jsonrpc schema for GetOhlcData tool input
+	GetOhlcDataInputSchema = jsonschema.Object(
 		jsonschema.Prop(
 			"symbol",
 			jsonschema.String(
@@ -142,8 +142,8 @@ var (
 		),
 		jsonschema.Required("symbol"),
 	)
-	// GetOHLCDataOutputSchema is the jsonrpc schema for GetOHLCData tool output
-	GetOHLCDataOutputSchema = jsonschema.Object(
+	// GetOhlcDataOutputSchema is the jsonrpc schema for GetOhlcData tool output
+	GetOhlcDataOutputSchema = jsonschema.Object(
 		jsonschema.Prop("symbol", jsonschema.String()),
 		jsonschema.Prop("data",
 			jsonschema.Array(
@@ -185,8 +185,8 @@ func init() {
 	schemas := []*jsonschema.Schema{
 		GetTechnicalDataInputSchema,
 		GetTechnicalDataOutputSchema,
-		GetOHLCDataInputSchema,
-		GetOHLCDataOutputSchema,
+		GetOhlcDataInputSchema,
+		GetOhlcDataOutputSchema,
 	}
 
 	for i := range schemas {
