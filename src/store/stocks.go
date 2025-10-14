@@ -9,11 +9,11 @@ import (
 	"sync"
 )
 
-var cache map[*models.Stock][]models.Candle
+var cache map[string][]models.Candle
 var mu sync.RWMutex
 
 func init() {
-	cache = make(map[*models.Stock][]models.Candle)
+	cache = make(map[string][]models.Candle)
 }
 
 // Get returns the candles of the given stock
@@ -21,7 +21,7 @@ func Get(stock *models.Stock) ([]models.Candle, error) {
 	mu.RLock()
 	defer mu.RUnlock()
 
-	value, ok := cache[stock]
+	value, ok := cache[stock.Symbol]
 	if !ok {
 		return value, fmt.Errorf("unexpected cache miss: %v", stock.Symbol)
 	}
@@ -40,7 +40,7 @@ func Add(stock *models.Stock) error {
 
 	mu.Lock()
 	defer mu.Unlock()
-	cache[stock] = candles
+	cache[stock.Symbol] = candles
 	return nil
 }
 
@@ -49,9 +49,9 @@ func Purge(stock *models.Stock) {
 	mu.Lock()
 	defer mu.Unlock()
 
-	_, ok := cache[stock]
+	_, ok := cache[stock.Symbol]
 	if ok {
 		log.Printf("purged %v from cache\n", stock.Symbol)
-		delete(cache, stock)
+		delete(cache, stock.Symbol)
 	}
 }

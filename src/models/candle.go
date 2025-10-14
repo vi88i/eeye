@@ -35,7 +35,6 @@ type Candle struct {
 type RawCandle = [6]any
 
 // CandlePayload represents the structure of candle data received in API responses.
-// CandlePayload represents the structure of candle data received in API responses.
 type CandlePayload struct {
 	// Candles is an array of raw candle data
 	Candles []RawCandle `json:"candles"`

@@ -16,6 +16,7 @@ import (
 
 func main() {
 	mcpMode := flag.Bool("mcp", false, "Enable to start MCP server")
+	cleanUp := flag.Bool("cleanup", false, "Clean up de-listed stocks")
 	flag.Parse()
 
 	applog := handlers.GetAppLog()
@@ -34,8 +35,9 @@ func main() {
 		case sig := <-quit:
 			log.Println("Shutting down gracefully, signal caught:", sig.String())
 		case <-done:
-			// Do the deletion only after analysis
-			db.DeleteDelistedStocks()
+			if *cleanUp {
+				db.DeleteDelistedStocks()
+			}
 		}
 	}
 

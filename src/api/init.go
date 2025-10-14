@@ -25,6 +25,9 @@ func InitNSEClient() {
 	NseClient = resty.New()
 	NseClient.SetHeader("User-Agent", constants.ReqNSEUserAgent)
 	NseClient.SetHeader("Accept", "application/json")
+	NseClient.SetHeader("Cache-Control", "no-cache, no-store, must-revalidate")
+	NseClient.SetHeader("Pragma", "no-cache")
+	NseClient.SetHeader("Expires", "0")
 	NseClient.SetBaseURL(config.NSE.BaseURL)
 }
 

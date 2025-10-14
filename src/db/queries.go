@@ -216,7 +216,7 @@ func DeleteDelistedStocks() {
 	log.Println("finding delisted stocks for deletion")
 	ctx := context.Background()
 
-	rows, err := Pool.Query(ctx, `
+	_, err := Pool.Exec(ctx, `
 		WITH
 			ts_info AS (
 				SELECT MAX(timestamp) AS ts
@@ -241,7 +241,6 @@ func DeleteDelistedStocks() {
 		log.Printf("deletion of delisted stocks failed: %v\n", err)
 		return
 	}
-	defer rows.Close()
 
 	log.Printf("deletion of delisted stocks done")
 }

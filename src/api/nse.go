@@ -9,6 +9,7 @@ import (
 	"fmt"
 	"log"
 	"path"
+	"strings"
 	"time"
 
 	"github.com/gocarina/gocsv"
@@ -20,6 +21,7 @@ func getMarketCapData(zipFileName, marketCapDataFileName string) ([]models.NSESt
 	empty := utils.EmptySlice[models.NSEStockData]()
 
 	// download zip file
+	log.Printf("getMarketCapData: Trying to fetch %v", zipFileName)
 	resp, err := NseClient.
 		R().
 		Get(zipFileName)
@@ -35,7 +37,7 @@ func getMarketCapData(zipFileName, marketCapDataFileName string) ([]models.NSESt
 
 	// traverse the zip file and find target file
 	for _, f := range r.File {
-		if !f.FileInfo().IsDir() && path.Base(f.Name) == marketCapDataFileName {
+		if !f.FileInfo().IsDir() && strings.EqualFold(path.Base(f.Name), marketCapDataFileName) {
 			rc, err := f.Open()
 			if err != nil {
 				return nil, fmt.Errorf("getMarketCapData: open file: %w", err)
@@ -82,6 +84,7 @@ func DownloadLatestBhavcopy() ([]models.NSEStockData, string, error) {
 
 		stocks, err := getMarketCapData(zipFileName, marketCapDataFileName)
 		if err == nil && len(stocks) > 0 {
+			log.Printf("DownloadLatestBhavcopy: Last trading day is %v", lastTradingDay)
 			return stocks, lastTradingDay, nil
 		}
 
