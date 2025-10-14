@@ -57,7 +57,37 @@ func GetCandles(stock *models.Stock, startTime string, endTime string) ([]models
 	for i := range body.Payload.Candles {
 		c := &body.Payload.Candles[i]
 
-		ts := time.Unix(int64(c[constants.CandleTimestampIndex].(float64)), 0)
+		timestamp, ok := c[constants.CandleTimestampIndex].(float64)
+		if !ok {
+			return empty, fmt.Errorf("invalid timestamp format for %s at index %d", stock.Symbol, i)
+		}
+
+		open, ok := c[constants.CandleOpenIndex].(float64)
+		if !ok {
+			return empty, fmt.Errorf("invalid open price format for %s at index %d", stock.Symbol, i)
+		}
+
+		high, ok := c[constants.CandleHighIndex].(float64)
+		if !ok {
+			return empty, fmt.Errorf("invalid high price format for %s at index %d", stock.Symbol, i)
+		}
+
+		low, ok := c[constants.CandleLowIndex].(float64)
+		if !ok {
+			return empty, fmt.Errorf("invalid low price format for %s at index %d", stock.Symbol, i)
+		}
+
+		closePrice, ok := c[constants.CandleCloseIndex].(float64)
+		if !ok {
+			return empty, fmt.Errorf("invalid close price format for %s at index %d", stock.Symbol, i)
+		}
+
+		volume, ok := c[constants.CandleVolumeIndex].(float64)
+		if !ok {
+			return empty, fmt.Errorf("invalid volume format for %s at index %d", stock.Symbol, i)
+		}
+
+		ts := time.Unix(int64(timestamp), 0)
 		startOfDay := time.Date(
 			ts.In(loc).Year(),
 			ts.In(loc).Month(),
@@ -69,11 +99,11 @@ func GetCandles(stock *models.Stock, startTime string, endTime string) ([]models
 		candle := models.Candle{
 			Symbol:    stock.Symbol,
 			Timestamp: startOfDay,
-			Open:      c[constants.CandleOpenIndex].(float64),
-			High:      c[constants.CandleHighIndex].(float64),
-			Low:       c[constants.CandleLowIndex].(float64),
-			Close:     c[constants.CandleCloseIndex].(float64),
-			Volume:    uint64(c[constants.CandleVolumeIndex].(float64)),
+			Open:      open,
+			High:      high,
+			Low:       low,
+			Close:     closePrice,
+			Volume:    uint64(volume),
 		}
 
 		candles = append(candles, candle)

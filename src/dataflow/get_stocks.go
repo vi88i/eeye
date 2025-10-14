@@ -8,7 +8,6 @@ import (
 	"eeye/src/utils"
 	"log"
 	"strings"
-	"time"
 )
 
 // fetchLatestStocksFromNSE fetches latest available stocks from NSE
@@ -45,6 +44,5 @@ func GetStocks() []models.Stock {
 	}
 
 	ingestor(stocks, lastTradingDay)
-	time.Sleep(time.Second * 2)
 	return stocks
 }
