@@ -14,6 +14,11 @@ type GetTechnicalDataInput struct {
 }
 
 //revive:disable-next-line exported
+type GetOHLCDataInput struct {
+	Symbol string `json:"symbol"`
+}
+
+//revive:disable-next-line exported
 type OHLC struct {
 	Open  float64 `json:"open"`
 	High  float64 `json:"high"`
@@ -42,6 +47,18 @@ type TechnicalData struct {
 type GetTechnicalDataOutput struct {
 	Symbol string          `json:"symbol"`
 	Data   []TechnicalData `json:"data"`
+}
+
+//revive:disable-next-line exported
+type OHLCWithTimestamp struct {
+	Timestamp time.Time `json:"date"`
+	OHLC      []float64 `json:"ohlc"`
+}
+
+//revive:disable-next-line exported
+type GetOHLCDataOutput struct {
+	Symbol string              `json:"symbol"`
+	Data   []OHLCWithTimestamp `json:"data"`
 }
 
 var (
@@ -114,6 +131,43 @@ var (
 			),
 		),
 	)
+	// GetOHLCDataInputSchema is the jsonrpc schema for GetOHLCData tool input
+	GetOHLCDataInputSchema = jsonschema.Object(
+		jsonschema.Prop(
+			"symbol",
+			jsonschema.String(
+				jsonschema.MinLen(1),
+				jsonschema.Examples("ZOMATO"),
+			),
+		),
+		jsonschema.Required("symbol"),
+	)
+	// GetOHLCDataOutputSchema is the jsonrpc schema for GetOHLCData tool output
+	GetOHLCDataOutputSchema = jsonschema.Object(
+		jsonschema.Prop("symbol", jsonschema.String()),
+		jsonschema.Prop("data",
+			jsonschema.Array(
+				jsonschema.Items(
+					jsonschema.Object(
+						jsonschema.Prop("date",
+							jsonschema.String(
+								jsonschema.Format("date-time"),
+								jsonschema.Description("ISO8601 timestamp, e.g. 2022-10-14T00:00:00"),
+							),
+						),
+						jsonschema.Prop("ohlc",
+							jsonschema.Array(
+								jsonschema.Description("OHLC data as array: [open, high, low, close]"),
+								jsonschema.Items(jsonschema.Number()),
+								jsonschema.MinItems(4),
+								jsonschema.MaxItems(4),
+							),
+						),
+					),
+				),
+			),
+		),
+	)
 )
 
 // ResolvedSchema stores the schema of tools in JSON format ([]byte)
@@ -131,6 +185,8 @@ func init() {
 	schemas := []*jsonschema.Schema{
 		GetTechnicalDataInputSchema,
 		GetTechnicalDataOutputSchema,
+		GetOHLCDataInputSchema,
+		GetOHLCDataOutputSchema,
 	}
 
 	for i := range schemas {

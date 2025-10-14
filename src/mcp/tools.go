@@ -85,6 +85,58 @@ func getTechnicalData(
 	return nil, out, nil
 }
 
+func getOhlcData(
+	_ context.Context,
+	_ *mcp.CallToolRequest,
+	input GetOHLCDataInput,
+) (*mcp.CallToolResult, GetOHLCDataOutput, error) {
+	res := GetOHLCDataInputSchema.Validate(input)
+	if !res.IsValid() {
+		return nil, GetOHLCDataOutput{}, fmt.Errorf("schema error: %v", res.Error())
+	}
+
+	stock := models.Stock{
+		Symbol:   input.Symbol,
+		Exchange: "NSE",
+		Segment:  "CASH",
+		Name:     input.Symbol,
+	}
+	candles, err := db.FetchAllCandles(&stock)
+	if err != nil {
+		return nil, GetOHLCDataOutput{}, fmt.Errorf("db failure: %v", err)
+	}
+
+	var (
+		timestamps = utils.GetTimestamps(candles)
+		totalItems = len(timestamps)
+	)
+
+	out := GetOHLCDataOutput{
+		Symbol: input.Symbol,
+		Data: func() []OHLCWithTimestamp {
+			data := make([]OHLCWithTimestamp, 0, totalItems)
+			for i := range totalItems {
+				data = append(data, OHLCWithTimestamp{
+					Timestamp: timestamps[i],
+					OHLC: []float64{
+						utils.Round2(candles[i].Open),
+						utils.Round2(candles[i].High),
+						utils.Round2(candles[i].Low),
+						utils.Round2(candles[i].Close),
+					},
+				})
+			}
+			sort.Slice(data, func(i, j int) bool {
+				return data[i].Timestamp.After(data[j].Timestamp)
+			})
+
+			return data
+		}(),
+	}
+
+	return nil, out, nil
+}
+
 func addTools(server *mcp.Server) {
 	mcp.AddTool(
 		server,
@@ -96,5 +148,17 @@ func addTools(server *mcp.Server) {
 			OutputSchema: json.RawMessage(ResolvedSchema[GetTechnicalDataOutputSchema]),
 		},
 		getTechnicalData,
+	)
+
+	mcp.AddTool(
+		server,
+		&mcp.Tool{
+			Name:         "getOhlcData",
+			Title:        "OHLC data of symbol",
+			Description:  "Gives OHLC with timestamp for the given symbol",
+			InputSchema:  json.RawMessage(ResolvedSchema[GetOHLCDataInputSchema]),
+			OutputSchema: json.RawMessage(ResolvedSchema[GetOHLCDataOutputSchema]),
+		},
+		getOhlcData,
 	)
 }
