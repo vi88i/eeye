@@ -91,7 +91,9 @@ The hooks will now run automatically before each commit. If there are any format
 
 # Running the Application
 
-To start the application, use the provided start script:
+## Running as Stock Screener
+
+To start the application as a stock screener, use the provided start script:
 
 ```bash
 # On Unix/Linux/MacOS
@@ -108,6 +110,134 @@ The start script will:
 3. Run the application with `go run`
 
 Note: Make sure you've completed the database setup and configuration steps before running the application.
+
+## Command Line Flags
+
+The application supports the following command-line flags:
+
+- `--mcp`: Enable MCP (Model Context Protocol) server mode
+- `--cleanup`: Clean up de-listed stocks from the database after analysis
+
+### Examples
+
+```bash
+# Run stock screener and clean up de-listed stocks
+go run main.go --cleanup
+
+# Start MCP server
+go run main.go --mcp
+
+# Run screener without cleanup (default)
+go run main.go
+```
+
+## Running as MCP Server
+
+The application can run as an MCP (Model Context Protocol) server, allowing AI assistants like Claude to analyze stock data through a standardized interface.
+
+### Starting the MCP Server
+
+```bash
+go run main.go --mcp
+```
+
+The server will start on the host and port specified in your `.env` file (defaults: `localhost:3000`).
+
+### Configuring Claude Desktop
+
+To use the eeye MCP server with Claude Desktop, you need to:
+
+1. **Start the MCP server** (in a separate terminal):
+   ```bash
+   go run main.go --mcp
+   ```
+
+   The server will start on `http://localhost:3000` (or the host/port configured in your `.env` file).
+
+2. **Configure Claude Desktop** to connect to the HTTP server:
+
+**Location of config file:**
+- macOS: `~/Library/Application Support/Claude/claude_desktop_config.json`
+- Windows: `%APPDATA%\Claude\claude_desktop_config.json`
+
+**Configuration:**
+
+```json
+{
+  "mcpServers": {
+    "eeye": {
+      "command": "npx",
+      "args": [
+        "mcp-remote",
+        "http://localhost:3000/"
+      ]
+    }
+  }
+}
+```
+
+**Note:** Make sure the port in the URL matches your `MCP_PORT` setting in the `.env` file (default is 3000).
+
+**After updating the configuration:**
+1. Restart Claude Desktop
+2. The eeye MCP server should be running in a separate terminal
+3. The eeye tools and resources will be available in Claude Desktop
+
+**Troubleshooting:**
+- Make sure the eeye server is running before starting Claude Desktop
+- Check that the port number matches between your `.env` file and Claude Desktop config
+- If you get connection errors, verify the server is accessible at `http://localhost:3000/` in your browser
+
+### Available MCP Resources
+
+- **nseStocks** (`db:stocks`): Returns a comma-separated list of all NSE stock symbols available in the database
+
+### Available MCP Tools
+
+1. **getTechnicalData**
+   - **Description**: Provides comprehensive technical analysis data including OHLC, EMA (5, 13, 26, 50), RSI, and volume indicators
+   - **Input**: `{ "symbol": "STOCK_SYMBOL" }`
+   - **Output**: Array of technical data sorted by date (most recent first)
+
+2. **getOhlcData**
+   - **Description**: Provides basic OHLC (Open, High, Low, Close) data with timestamps
+   - **Input**: `{ "symbol": "STOCK_SYMBOL" }`
+   - **Output**: Array of OHLC data sorted by date (most recent first)
+
+### Example Prompts for Claude
+
+Once configured, you can ask Claude questions like:
+
+1. **Get available stocks:**
+   ```
+   What NSE stocks are available in the eeye database?
+   ```
+
+2. **Technical analysis:**
+   ```
+   Get the technical data for ZOMATO and analyze the recent trend.
+   Is ZOMATO showing bullish momentum based on its EMA and RSI indicators?
+   ```
+
+3. **Price analysis:**
+   ```
+   Get the OHLC data for RELIANCE for the last 30 days and identify support/resistance levels.
+   ```
+
+4. **Compare stocks:**
+   ```
+   Compare the RSI and EMA50 indicators between INFY and TCS. Which one looks better positioned?
+   ```
+
+5. **Pattern recognition:**
+   ```
+   Analyze the OHLC data for TATAMOTORS and identify any bullish or bearish patterns in the last 10 trading days.
+   ```
+
+6. **Multi-stock screening:**
+   ```
+   Get the list of available stocks, then check which ones have RSI between 40-60 and are trading above their EMA50.
+   ```
 
 ---
 
