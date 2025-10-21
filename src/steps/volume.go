@@ -12,6 +12,7 @@ import (
 // It compares the current volume against the average volume using a custom screening
 // function to identify significant volume patterns.
 type Volume struct {
+	models.StepBaseImpl
 	Test func(currentVolume float64, averageVolume float64) bool
 }
 
@@ -41,14 +42,17 @@ func (v *Volume) Screen(strategy string, stock *models.Stock) bool {
 	}
 
 	maLength := len(volumeMA)
-	test := v.Test(float64(candles[length-1].Volume), volumeMA[maLength-1])
-	if !test {
-		log.Printf("[%v - %v] test failed: %v\n", strategy, step, stock.Symbol)
-	}
-	return test
+	return v.TruthyCheck(
+		strategy,
+		step,
+		stock,
+		func() bool {
+			return v.Test(float64(candles[length-1].Volume), volumeMA[maLength-1])
+		},
+	)
 }
 
-// ComputeVolumeMA returns simple moving average of trading volumes for the given period
+// ComputeVolumeMA is helper method that returns simple moving average of trading volumes for the given period
 func ComputeVolumeMA(candles []models.Candle, period int) []float64 {
 	if len(candles) < period {
 		return utils.EmptySlice[float64]()

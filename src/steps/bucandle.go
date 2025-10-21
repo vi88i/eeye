@@ -108,7 +108,9 @@ func isPiercing(candle1 *models.Candle, candle2 *models.Candle) bool {
 // - Hammer patterns (potential reversal at support)
 // - Engulfing patterns (trend reversal signal)
 // - Piercing patterns (bullish reversal after downtrend)
-type BullishCandle struct{}
+type BullishCandle struct {
+	models.StepBaseImpl
+}
 
 //revive:disable-next-line exported
 func (b *BullishCandle) Name() string {
@@ -135,15 +137,17 @@ func (b *BullishCandle) Screen(strategy string, stock *models.Stock) bool {
 	}
 
 	isTwoCandleStickPatternValid := length >= 2
-	test := isSolid(&candles[length-1]) ||
-		isHammer(&candles[length-1]) ||
-		(isTwoCandleStickPatternValid &&
-			isEngulfing(&candles[length-2], &candles[length-1])) ||
-		(isTwoCandleStickPatternValid &&
-			isPiercing(&candles[length-2], &candles[length-1]))
-
-	if !test {
-		log.Printf("[%v - %v] test failed: %v\n", strategy, step, stock.Symbol)
-	}
-	return test
+	return b.TruthyCheck(
+		strategy,
+		step,
+		stock,
+		func() bool {
+			return isSolid(&candles[length-1]) ||
+				isHammer(&candles[length-1]) ||
+				(isTwoCandleStickPatternValid &&
+					isEngulfing(&candles[length-2], &candles[length-1])) ||
+				(isTwoCandleStickPatternValid &&
+					isPiercing(&candles[length-2], &candles[length-1]))
+		},
+	)
 }

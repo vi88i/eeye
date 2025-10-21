@@ -10,6 +10,7 @@ import (
 
 // Ema creates a function that screens for stocks based on their Exponential Moving Average (EMA).
 type Ema struct {
+	models.StepBaseImpl
 	Period int
 	Test   func(candles []models.Candle, emas []float64) bool
 }
@@ -42,11 +43,14 @@ func (e *Ema) Screen(strategy string, stock *models.Stock) bool {
 		return false
 	}
 
-	test := e.Test(candles, values)
-	if !test {
-		log.Printf("[%v - %v] test failed: %v\n", strategy, step, stock.Symbol)
-	}
-	return test
+	return e.TruthyCheck(
+		strategy,
+		step,
+		stock,
+		func() bool {
+			return e.Test(candles, values)
+		},
+	)
 }
 
 // ComputeEma is helper method to compute the EMA values

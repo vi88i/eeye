@@ -12,6 +12,7 @@ import (
 // Index (RSI) value. It calculates the 14-period RSI and applies a custom screening
 // function to determine if the stock meets the criteria.
 type Rsi struct {
+	models.StepBaseImpl
 	Test func(rsiValues []float64) bool
 }
 
@@ -43,11 +44,14 @@ func (r *Rsi) Screen(strategy string, stock *models.Stock) bool {
 		return false
 	}
 
-	test := r.Test(rsi)
-	if !test {
-		log.Printf("[%v - %v] test failed: %v\n", strategy, step, stock.Symbol)
-	}
-	return test
+	return r.TruthyCheck(
+		strategy,
+		step,
+		stock,
+		func() bool {
+			return r.Test(rsi)
+		},
+	)
 }
 
 // ComputeRsi is helper method to compute the RSI values

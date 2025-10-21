@@ -12,6 +12,7 @@ import (
 
 // BollingerBands creates a function to screen stocks based on their bollinger band values
 type BollingerBands struct {
+	models.StepBaseImpl
 	Test func(candles []models.Candle, sma []float64, lbb []float64, ubb []float64) bool
 }
 
@@ -62,9 +63,12 @@ func (b *BollingerBands) Screen(strategy string, stock *models.Stock) bool {
 		}
 	}
 
-	test := b.Test(candles, sma, lbb, ubb)
-	if !test {
-		log.Printf("[%v - %v] test failed: %v\n", strategy, step, stock.Symbol)
-	}
-	return test
+	return b.TruthyCheck(
+		strategy,
+		step,
+		stock,
+		func() bool {
+			return b.Test(candles, sma, lbb, ubb)
+		},
+	)
 }

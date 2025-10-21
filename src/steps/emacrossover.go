@@ -8,6 +8,7 @@ import (
 
 // EmaCrossover helps to check if the EMAs of different periods are in crossover state
 type EmaCrossover struct {
+	models.StepBaseImpl
 	Periods []int
 	Test    func(emas [][]float64) bool
 }
@@ -36,9 +37,12 @@ func (e *EmaCrossover) Screen(strategy string, stock *models.Stock) bool {
 		}
 	}
 
-	test := e.Test(emas)
-	if !test {
-		log.Printf("[%v - %v] test failed: %v\n", strategy, step, stock.Symbol)
-	}
-	return test
+	return e.TruthyCheck(
+		strategy,
+		step,
+		stock,
+		func() bool {
+			return e.Test(emas)
+		},
+	)
 }
