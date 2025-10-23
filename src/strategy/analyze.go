@@ -147,6 +147,11 @@ func Analyze() <-chan any {
 			&BullishSwing{},
 			&LowerBollingerBandBullish{},
 			&EmaFakeBreakdown{period: 50},
+			&FakeBreakdown{
+				Window:    5,
+				Tolerance: 0.01,
+				Strength:  3,
+			},
 			&RsiEntersBullishSwingZone{baseLine: 40, upperBound: 60},
 			&BullishMomentumBreakout{},
 		}

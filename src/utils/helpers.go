@@ -117,3 +117,23 @@ func Round2(num float64) float64 {
 	rounded, _ := strconv.ParseFloat(fmt.Sprintf("%.2f", num), 64)
 	return rounded
 }
+
+// Reduce helps to reduce the slice using the reducer function
+func Reduce[T any](items []T, reducer func(T, T, int) T, initial T) T {
+	acc := initial
+	for i := range items {
+		acc = reducer(acc, items[i], i)
+	}
+	return acc
+}
+
+// Filter helps to filter the slice using the condition function
+func Filter[T any](items []T, condition func(T, int) bool) []T {
+	res := []T{}
+	for i := range items {
+		if condition(items[i], i) {
+			res = append(res, items[i])
+		}
+	}
+	return res
+}

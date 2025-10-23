@@ -26,13 +26,20 @@ for file in $STAGED_GO_FILES; do
     fi
 done
 
-# Run golangci-lint on staged files only
-echo "Running golangci-lint on staged files..."
-echo "$STAGED_GO_FILES" | xargs golangci-lint run
-if [ $? -ne 0 ]; then
-    echo "golangci-lint failed"
-    exit 1
-fi
+# Run golangci-lint on directories containing staged files
+echo "Running golangci-lint..."
+# Extract unique directories from staged files
+STAGED_DIRS=$(echo "$STAGED_GO_FILES" | xargs -n1 dirname | sort -u)
+
+# Run golangci-lint on each directory
+for dir in $STAGED_DIRS; do
+    echo "Linting directory: $dir"
+    golangci-lint run "$dir"
+    if [ $? -ne 0 ]; then
+        echo "golangci-lint failed in $dir"
+        exit 1
+    fi
+done
 
 echo "Pre-commit checks passed!"
 exit 0
