@@ -95,11 +95,11 @@ func (f *FakeBreakdown) Execute(stock *models.Stock) {
 					func(level float64, _ int) bool {
 						// Fake breakdown condition:
 						// Low went below the level BUT close is above the level
-						log.Printf("[%v] %v did fake breakdown at level %v", strategyName, stock.Symbol, level)
 						return currentLow < level && currentClose > level
 					},
 				)
 
+				log.Printf("[%v] %v did fake breakdown at levels %v", strategyName, stock.Symbol, fakeBreakdownLevels)
 				return len(fakeBreakdownLevels) > 0
 			},
 		},
