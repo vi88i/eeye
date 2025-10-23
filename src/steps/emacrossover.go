@@ -6,11 +6,19 @@ import (
 	"log"
 )
 
-// EmaCrossover helps to check if the EMAs of different periods are in crossover state
+// EmaCrossover screens for EMA crossover signals between multiple periods.
+// Crossovers occur when a faster EMA crosses above/below a slower EMA,
+// indicating potential trend changes.
 type EmaCrossover struct {
 	models.StepBaseImpl
+	// Periods is a list of EMA periods to calculate and compare.
+	// Example: [9, 21, 50] for short, medium, and long-term EMAs
 	Periods []int
-	Test    func(emas [][]float64) bool
+	// Test receives EMA arrays for all periods to check crossover conditions.
+	// Parameters:
+	//   - emas: 2D slice where emas[i] contains EMA values for Periods[i]
+	// Returns true if the crossover condition is met.
+	Test func(emas [][]float64) bool
 }
 
 //revive:disable-next-line exported
@@ -29,6 +37,7 @@ func (e *EmaCrossover) Screen(strategy string, stock *models.Stock) bool {
 		return false
 	}
 
+	// Calculate EMAs for all specified periods
 	for i, period := range e.Periods {
 		emas = append(emas, ComputeEma(candles, period))
 		if len(emas[i]) == 0 {

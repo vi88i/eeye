@@ -1,22 +1,38 @@
 #!/bin/sh
 
-# Run go fmt on all files in src directory
-echo "Running go fmt..."
-go fmt ./src/...
-if [ $? -ne 0 ]; then
-    echo "go fmt failed"
-    exit 1
+# Get list of staged Go files
+STAGED_GO_FILES=$(git diff --cached --name-only --diff-filter=ACM | grep '\.go$')
+
+# If no Go files are staged, exit successfully
+if [ -z "$STAGED_GO_FILES" ]; then
+    echo "No Go files staged for commit"
+    exit 0
 fi
 
-# Stage the formatted files
-git add -u
+echo "Staged Go files:"
+echo "$STAGED_GO_FILES"
 
-# Run golangci-lint
-echo "Running golangci-lint..."
-golangci-lint run
+# Run go fmt on staged files only
+echo "Running go fmt on staged files..."
+for file in $STAGED_GO_FILES; do
+    if [ -f "$file" ]; then
+        go fmt "$file"
+        if [ $? -ne 0 ]; then
+            echo "go fmt failed on $file"
+            exit 1
+        fi
+        # Re-stage the formatted file
+        git add "$file"
+    fi
+done
+
+# Run golangci-lint on staged files only
+echo "Running golangci-lint on staged files..."
+echo "$STAGED_GO_FILES" | xargs golangci-lint run
 if [ $? -ne 0 ]; then
     echo "golangci-lint failed"
     exit 1
 fi
 
+echo "Pre-commit checks passed!"
 exit 0
