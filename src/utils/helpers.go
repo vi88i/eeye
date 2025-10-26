@@ -285,6 +285,7 @@ func Filter[T any](items []T, condition func(T, int) bool) []T {
 // The progress bar displays with format: "[description] [===>    ] 50/100"
 func GetProgressTracker(num int, description string) *progressbar.ProgressBar {
 	return progressbar.NewOptions(num,
+		progressbar.OptionShowCount(),
 		progressbar.OptionEnableColorCodes(true),
 		progressbar.OptionSetWidth(25),
 		progressbar.OptionSetDescription(description),
