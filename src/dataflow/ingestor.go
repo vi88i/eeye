@@ -98,11 +98,9 @@ func ingestor(stocks []models.Stock, lastTradingDay string) {
 	}
 
 	for range constants.NumOfIngestionWorkers {
-		wg.Add(1)
-		go func() {
-			defer wg.Done()
+		wg.Go(func() {
 			ingestionWorker(in)
-		}()
+		})
 	}
 
 	log.Printf("%v stocks need backfilling\n", len(stocksNeedingBackfill))

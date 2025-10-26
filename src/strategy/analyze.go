@@ -39,12 +39,10 @@ func executor(strategies []models.Strategy, source <-chan *models.Stock) {
 		// Execute all strategies concurrently for this stock
 		wg := sync.WaitGroup{}
 		for i := range strategies {
-			wg.Add(1)
-			go func() {
-				defer wg.Done()
+			wg.Go(func() {
 				// Each strategy runs independently on the same stock data
 				strategies[i].Execute(stock)
-			}()
+			})
 		}
 
 		// Wait for all strategies to finish analyzing this stock
@@ -90,12 +88,10 @@ func spawnStrategyWorkers(strategies []models.Strategy) (chan *models.Stock, cha
 
 		// Spawn N worker goroutines to process stocks in parallel
 		for range constants.NumOfStrategyWorkers {
-			wg.Add(1)
-			go func() {
-				defer wg.Done()
+			wg.Go(func() {
 				// Each worker runs the executor, pulling from the shared source channel
 				executor(strategies, source)
-			}()
+			})
 		}
 
 		// Wait for all workers to finish processing
@@ -170,10 +166,7 @@ func aggregator(strategies []models.Strategy, done <-chan any) {
 
 	// Spawn a goroutine for each strategy to collect its results
 	for i := range strategies {
-		wg.Add(1)
-		go func() {
-			defer wg.Done()
-
+		wg.Go(func() {
 			// Collect all stocks that passed this strategy's screening
 			res := make([]*models.Stock, 0, constants.StrategyWorkerOutputBufferSize)
 			for stock := range strategies[i].GetSink() {
@@ -182,7 +175,7 @@ func aggregator(strategies []models.Strategy, done <-chan any) {
 
 			// Send the complete result set to the aggregation channel
 			agg <- &models.StrategyResult{Strategy: strategies[i], Stocks: res}
-		}()
+		})
 	}
 
 	// Shutdown coordinator goroutine

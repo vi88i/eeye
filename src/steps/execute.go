@@ -26,13 +26,10 @@ func Execute(strategy string, stock *models.Stock, screeners []models.Step) bool
 
 	// Execute all screeners concurrently
 	for i := range screeners {
-		wg.Add(1)
-
-		go func() {
-			defer wg.Done()
+		wg.Go(func() {
 			v := screeners[i].Screen(strategy, stock)
 			out <- v
-		}()
+		})
 	}
 
 	// Close channel when all screeners complete
