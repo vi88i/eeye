@@ -12,15 +12,21 @@ type AppLog struct {
 	handle *os.File
 }
 
-// Init initializes the multi writer to write to both stdout and app.log file
-func (a *AppLog) Init() {
+// Init initializes the log output based on verbose flag
+// If verbose is true, writes to both stdout and app.log file
+// If verbose is false, writes only to app.log file
+func (a *AppLog) Init(verbose bool) {
 	logFile, err := os.OpenFile("app.log", os.O_CREATE|os.O_WRONLY, 0666)
 	if err != nil {
 		log.Fatal(err)
 	}
 
-	mw := io.MultiWriter(os.Stdout, logFile)
-	log.SetOutput(mw)
+	if verbose {
+		mw := io.MultiWriter(os.Stdout, logFile)
+		log.SetOutput(mw)
+	} else {
+		log.SetOutput(logFile)
+	}
 	a.handle = logFile
 }
 
@@ -32,8 +38,8 @@ func (a *AppLog) Close() {
 }
 
 // GetAppLog creates an instance of AppLog handler
-func GetAppLog() *AppLog {
+func GetAppLog(verbose bool) *AppLog {
 	a := AppLog{}
-	a.Init()
+	a.Init(verbose)
 	return &a
 }

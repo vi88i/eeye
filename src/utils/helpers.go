@@ -9,6 +9,7 @@ import (
 	"slices"
 	"strconv"
 
+	progressbar "github.com/schollz/progressbar/v3"
 	"golang.org/x/exp/constraints"
 )
 
@@ -261,4 +262,37 @@ func Filter[T any](items []T, condition func(T, int) bool) []T {
 		}
 	}
 	return res
+}
+
+// GetProgressTracker creates and returns a configured progress bar for tracking operation progress.
+// The progress bar is displayed in the terminal with a custom green theme and color-coded output.
+//
+// Parameters:
+//   - num: Total number of items/steps to track (sets the progress bar's maximum value)
+//   - description: Text description displayed alongside the progress bar (e.g., "Analyzing stocks...")
+//
+// Returns:
+//   - *progressbar.ProgressBar: A configured progress bar instance ready for tracking
+//
+// Example usage:
+//
+//	bar := GetProgressTracker(100, "Processing files...")
+//	for i := 0; i < 100; i++ {
+//	    // Do work...
+//	    bar.Add(1)
+//	}
+//
+// The progress bar displays with format: "[description] [===>    ] 50/100"
+func GetProgressTracker(num int, description string) *progressbar.ProgressBar {
+	return progressbar.NewOptions(num,
+		progressbar.OptionEnableColorCodes(true),
+		progressbar.OptionSetWidth(25),
+		progressbar.OptionSetDescription(description),
+		progressbar.OptionSetTheme(progressbar.Theme{
+			Saucer:        "[green]=[reset]",
+			SaucerHead:    "[green]>[reset]",
+			SaucerPadding: " ",
+			BarStart:      "[",
+			BarEnd:        "]",
+		}))
 }

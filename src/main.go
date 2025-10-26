@@ -17,9 +17,10 @@ import (
 func main() {
 	mcpMode := flag.Bool("mcp", false, "Enable to start MCP server")
 	cleanUp := flag.Bool("cleanup", false, "Clean up de-listed stocks")
+	verbose := flag.Bool("verbose", false, "Print logs in stdout/stderr")
 	flag.Parse()
 
-	applog := handlers.GetAppLog()
+	applog := handlers.GetAppLog(*verbose)
 	config.Load()
 	api.InitGrowwTradingClient()
 	api.InitNseClient()

@@ -11,6 +11,8 @@ import (
 	"log"
 	"sync"
 	"time"
+
+	progressbar "github.com/schollz/progressbar/v3"
 )
 
 // backFillCandles fetches and stores new candle data for a stock starting from the day
@@ -44,11 +46,12 @@ func backFillCandles(stock *models.Stock) error {
 }
 
 // ingestionWorker processes stocks from the input channel and backfills their candle data.
-func ingestionWorker(in <-chan *models.Stock) {
+func ingestionWorker(in <-chan *models.Stock, bar *progressbar.ProgressBar) {
 	for stock := range in {
 		if err := backFillCandles(stock); err != nil {
 			log.Printf("ingestion failed for %v: %v\n", stock.Symbol, err)
 		}
+		_ = bar.Add(1)
 	}
 }
 
@@ -97,9 +100,10 @@ func ingestor(stocks []models.Stock, lastTradingDay string) {
 		stocksNeedingBackfill = append(stocksNeedingBackfill, &outOfSyncStocks[i])
 	}
 
+	bar := utils.GetProgressTracker(len(stocksNeedingBackfill), "Ingesting most recent data...")
 	for range constants.NumOfIngestionWorkers {
 		wg.Go(func() {
-			ingestionWorker(in)
+			ingestionWorker(in, bar)
 		})
 	}
 

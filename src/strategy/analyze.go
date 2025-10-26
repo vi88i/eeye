@@ -10,6 +10,8 @@ import (
 	"strings"
 	"sync"
 	"time"
+
+	progressbar "github.com/schollz/progressbar/v3"
 )
 
 // executor processes stocks from the source channel, applies all strategies concurrently,
@@ -27,12 +29,13 @@ import (
 // Parameters:
 //   - strategies: List of strategies to apply to each stock
 //   - source: Channel providing stocks to analyze
-func executor(strategies []models.Strategy, source <-chan *models.Stock) {
+func executor(strategies []models.Strategy, source <-chan *models.Stock, bar *progressbar.ProgressBar) {
 	// Process each stock from the source channel until it's closed
 	for stock := range source {
 		// Fetch and cache historical data for this stock
 		if err := store.Add(stock); err != nil {
 			log.Printf("historical data extraction failed for %v: %v\n", stock.Symbol, err)
+			_ = bar.Add(1)
 			continue
 		}
 
@@ -50,6 +53,7 @@ func executor(strategies []models.Strategy, source <-chan *models.Stock) {
 
 		// Clean up cached data for this stock to free memory
 		store.Purge(stock)
+		_ = bar.Add(1)
 	}
 }
 
@@ -75,7 +79,7 @@ func executor(strategies []models.Strategy, source <-chan *models.Stock) {
 // Returns:
 //   - source: Buffered channel to send stocks for processing
 //   - done: Signal channel that closes when all workers have finished
-func spawnStrategyWorkers(strategies []models.Strategy) (chan *models.Stock, chan any) {
+func spawnStrategyWorkers(strategies []models.Strategy, numOfStocks int) (chan *models.Stock, chan any) {
 	var (
 		// Buffered channel to prevent blocking when sending stocks
 		source = make(chan *models.Stock, constants.StrategyWorkerInputBufferSize)
@@ -85,12 +89,13 @@ func spawnStrategyWorkers(strategies []models.Strategy) (chan *models.Stock, cha
 
 	go func() {
 		wg := sync.WaitGroup{}
+		bar := utils.GetProgressTracker(numOfStocks, "Analyzing stocks...")
 
 		// Spawn N worker goroutines to process stocks in parallel
 		for range constants.NumOfStrategyWorkers {
 			wg.Go(func() {
 				// Each worker runs the executor, pulling from the shared source channel
-				executor(strategies, source)
+				executor(strategies, source, bar)
 			})
 		}
 
@@ -286,7 +291,7 @@ func Analyze() <-chan any {
 		}
 
 		// Set up concurrent processing pipeline
-		source, isWorkDone := spawnStrategyWorkers(strategies)
+		source, isWorkDone := spawnStrategyWorkers(strategies, len(stocks))
 		feeder(stocks, source)
 		aggregator(strategies, isWorkDone)
 
