@@ -21,7 +21,12 @@ func fetchLatestStocksFromNSE() ([]models.Stock, string, error) {
 
 	filtered := make([]models.Stock, 0, len(stocks))
 	for _, s := range stocks {
-		if strings.TrimSpace(s.Series) == "EQ" && strings.TrimSpace(s.Category) == "Listed" {
+		// Filter for equity stocks in capital market segment
+		// Exclude ETFs by checking ISIN prefix (stocks start with INE, ETFs with INF)
+		if strings.TrimSpace(s.Segment) == "CM" &&
+			strings.TrimSpace(s.InstrumentType) == "STK" &&
+			strings.TrimSpace(s.Series) == "EQ" &&
+			strings.HasPrefix(strings.TrimSpace(s.ISIN), "INE") {
 			filtered = append(filtered, models.Stock{
 				Symbol:   strings.TrimSpace(s.Symbol),
 				Name:     strings.TrimSpace(s.Name),

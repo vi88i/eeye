@@ -18,16 +18,22 @@ type Stock struct {
 
 // NSEStockData represents the structure of stock data fetched from NSE bhavcopy CSV files.
 type NSEStockData struct {
-	// Symbol is the unique ticker symbol for the stock
-	Symbol string `csv:"Symbol"`
+	// TckrSymb is the unique ticker symbol for the stock
+	Symbol string `csv:"TckrSymb"`
 
-	// Indicates the type of stock (e.g., EQ, BE etc.)
-	Series string `csv:"Series"`
+	// SctySrs indicates the type of stock (e.g., EQ, BE etc.)
+	Series string `csv:"SctySrs"`
 
-	// Name is the company's full name
-	Name string `csv:"Security Name"`
+	// FinInstrmNm is the financial instrument name (company's full name)
+	Name string `csv:"FinInstrmNm"`
 
-	// Listed | Permitted, Listed means formally listed on NSE
-	// Permitted means special grant given (avoid such stocks)
-	Category string `csv:"Category"`
+	// ISIN is the International Securities Identification Number
+	// Used to differentiate stocks (INE*) from ETFs (INF*)
+	ISIN string `csv:"ISIN"`
+
+	// Sgmt is the market segment (e.g., CM for Capital Market)
+	Segment string `csv:"Sgmt"`
+
+	// FinInstrmTp is the financial instrument type (e.g., STK for stock)
+	InstrumentType string `csv:"FinInstrmTp"`
 }
